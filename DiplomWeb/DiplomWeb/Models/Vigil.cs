@@ -24,7 +24,7 @@ namespace DiplomWeb.Models
         [HiddenInput(DisplayValue = false)]
         public string ApplicationRoleID { get; set; }
 
-        [Display(Name = "Название")]
+        [Display(Name = "Группа")]
         
         public virtual ApplicationRole ApplicationRole { get; set; }
 

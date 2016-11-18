@@ -16,23 +16,31 @@ namespace DiplomWeb.Models
 
 
         [Display(Name = "Название")]
-        public string Name { get; set; }
+        public string Title { get; set; }
+
+        [Display(Name = "Описпние")]
+        public string Description { get; set; }
+
+        [Display(Name ="Начало")]
+        public DateTime StartAt { get; set; }
+
+        [Display(Name = "Конец")]
+        public DateTime EndAt { get; set; }
+
+        [Display(Name ="Целый день?")]
+        public bool IsFullDay { get; set; }
 
         [HiddenInput(DisplayValue = false)]
         public string ApplicationUserID { get; set; }
 
-        [Display(Name = "Название")]
+        [Display(Name = "Пользователь")]
         public virtual ApplicationUser ApplicationUser { get; set; }
 
         [HiddenInput(DisplayValue = false)]
         public int? VigilID { get; set; }
 
-        [Display(Name = "Название")]
+        [Display(Name = "Дежурство")]
         public virtual Vigil Vigil { get; set; }
 
-        [Display(Name = "Дата дежурства")]
-        public DateTime DateVigil { get; set; }
-        [Display(Name = "Примечание")]
-        public string Note { get; set; }
     }
 }

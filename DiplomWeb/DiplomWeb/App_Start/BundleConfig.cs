@@ -23,9 +23,19 @@ namespace DiplomWeb
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/respond.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/calendar").Include(
+                    "~/Scripts/moment.js",
+                    "~/Scripts/fullcalendar.js",
+                    "~/Scripts/fullcalendar/locale/ru.js",
+                    "~/Scripts/main.js"
+                    ));
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
+            bundles.Add(new StyleBundle("~/Content/calendar").Include(
+                    "~/Content/fullcalendar.css",
+                    "~/Content/style.css"));
         }
     }
 }
