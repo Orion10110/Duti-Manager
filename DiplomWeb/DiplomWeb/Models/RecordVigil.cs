@@ -13,6 +13,11 @@ namespace DiplomWeb.Models
         [HiddenInput(DisplayValue = false)]
         public int Id { get; set; }
 
+        [NotMapped]
+        public bool Editable { set; get; }
+
+        [Display(Name = "Цвет")]
+        public string Color { get; set; }
 
 
         [Display(Name = "Название")]

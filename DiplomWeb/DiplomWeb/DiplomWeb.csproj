@@ -200,8 +200,7 @@
     <Compile Include="Controllers\ApplicationUsersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\RecordVigilsController.cs" />
-    <Compile Include="Controllers\Vigils1Controller.cs" />
+    <Compile Include="Controllers\UserVigilsController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\VigilsController.cs" />
     <Compile Include="Global.asax.cs">
@@ -218,6 +217,22 @@
     <Compile Include="Migrations\201611141451124_ch2.cs" />
     <Compile Include="Migrations\201611141451124_ch2.Designer.cs">
       <DependentUpon>201611141451124_ch2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611181225487_changed event.cs" />
+    <Compile Include="Migrations\201611181225487_changed event.Designer.cs">
+      <DependentUpon>201611181225487_changed event.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611221710223_newMigColor.cs" />
+    <Compile Include="Migrations\201611221710223_newMigColor.Designer.cs">
+      <DependentUpon>201611221710223_newMigColor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611251951282_myMig.cs" />
+    <Compile Include="Migrations\201611251951282_myMig.Designer.cs">
+      <DependentUpon>201611251951282_myMig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611252006393_myMig1.cs" />
+    <Compile Include="Migrations\201611252006393_myMig1.Designer.cs">
+      <DependentUpon>201611252006393_myMig1.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -303,7 +318,6 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Vigils1\Index.cshtml" />
     <Content Include="Views\ApplicationRoles\Index.cshtml" />
     <Content Include="Views\ApplicationRoles\Details.cshtml" />
     <Content Include="Views\ApplicationRoles\Create.cshtml" />
@@ -316,11 +330,18 @@
     <Content Include="Views\ApplicationUsers\Details.cshtml" />
     <Content Include="Views\ApplicationUsers\AddRole.cshtml" />
     <Content Include="Views\RecordVigils\ViewCalendar.cshtml" />
+    <Content Include="Views\UserVigils\Index.cshtml" />
+    <Content Include="Views\UserVigils\Create.cshtml" />
+    <Content Include="Views\Vigils\Create.cshtml" />
+    <Content Include="Views\Vigils\Delete.cshtml" />
+    <Content Include="Views\Vigils\Details.cshtml" />
+    <Content Include="Views\Vigils\Edit.cshtml" />
+    <Content Include="Views\Vigils\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Scripts\fullcalendar\locale\" />
-    <Folder Include="Views\Vigils\" />
+    <Folder Include="test\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -338,6 +359,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611141451124_ch2.resx">
       <DependentUpon>201611141451124_ch2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611181225487_changed event.resx">
+      <DependentUpon>201611181225487_changed event.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611221710223_newMigColor.resx">
+      <DependentUpon>201611221710223_newMigColor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611251951282_myMig.resx">
+      <DependentUpon>201611251951282_myMig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611252006393_myMig1.resx">
+      <DependentUpon>201611252006393_myMig1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
