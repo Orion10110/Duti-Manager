@@ -85,7 +85,7 @@ namespace DiplomWeb.Controllers
             if (ModelState.IsValid)
             {
 
-                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, PhoneNumber = model.Number,Age = model.Age };
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, PhoneNumber = model.Number,DateBirth = model.DateBirth};
                 var result = await UserManager.CreateAsync(user, model.Password);
 
 
@@ -143,7 +143,7 @@ namespace DiplomWeb.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             ApplicationUser applicationUser = db.Users.Find(id);
-            var model = new ChangedViewModel {Id=applicationUser.Id, UserName = applicationUser.UserName, Email = applicationUser.Email, Number = applicationUser.PhoneNumber, Age = applicationUser.Age };
+            var model = new ChangedViewModel {Id=applicationUser.Id, UserName = applicationUser.UserName, Email = applicationUser.Email, Number = applicationUser.PhoneNumber};
             if (applicationUser == null)
             {
                 return HttpNotFound();
@@ -167,7 +167,6 @@ namespace DiplomWeb.Controllers
                     appUser.PasswordHash = UserManager.getHasherPassword(model.Password);
                 }      
                 appUser.PhoneNumber = model.Number;
-                appUser.Age = model.Age;
                 appUser.Email = model.Email;
                 db.Entry(appUser).State = EntityState.Modified;
                 db.SaveChanges();

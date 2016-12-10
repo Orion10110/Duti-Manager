@@ -13,7 +13,10 @@ namespace DiplomWeb
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
-
+            bundles.Add(new ScriptBundle("~/bundles/tinymce").Include(
+                        "~/Scripts/tinymce.min.js"));
+            bundles.Add(new ScriptBundle("~/bundles/scripts").Include(
+                        "~/Scripts/scripts.js"));
             // Используйте версию Modernizr для разработчиков, чтобы учиться работать. Когда вы будете готовы перейти к работе,
             // используйте средство сборки на сайте http://modernizr.com, чтобы выбрать только нужные тесты.
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
@@ -34,8 +37,9 @@ namespace DiplomWeb
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
             bundles.Add(new StyleBundle("~/Content/calendar").Include(
-                    "~/Content/fullcalendar.css",
-                    "~/Content/style.css"));
+                    "~/Content/fullcalendar.css"));
+            bundles.Add(new StyleBundle("~/Content/styles").Include(
+                   "~/Content/styles.css"));
         }
     }
 }

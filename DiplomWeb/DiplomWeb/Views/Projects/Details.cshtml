@@ -1,0 +1,77 @@
+﻿@model DiplomWeb.Models.Project
+@using DiplomWeb.Models
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Project</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.Raw(Model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateStart)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateStart)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DataFinal)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DataFinal)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Priority)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Priority)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Groups)
+        </dt>
+
+        @foreach (var item in Model.Groups)
+            {
+            <dd>
+                @item.Name
+            </dd>
+        }
+        <dt>
+            @Html.DisplayNameFor(model => model.FilesCRMs)
+        </dt>
+        @foreach (FilesCRM item in Model.FilesCRMs)
+            {
+            
+            <dd>
+              <a href="~/Files/@item.Name">@item.FileName</a>
+            </dd>
+        }
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

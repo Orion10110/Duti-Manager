@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -70,11 +71,26 @@ namespace DiplomWeb.Models
         public string Email { get; set; }
 
         [Required]
-        [Display(Name = "Возраст")]
-        public int Age { get; set; }
+        [Display(Name = "Имя")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [Display(Name = "Фамилия")]
+        public string SecondName { get; set; }
+
+        [Display(Name = "Уведомления по email")]
+        public bool EmailNotifications { get; set; }
+
+        [Required]
+         [Display(Name = "Возраст")]
+        public  DateTime DateBirth { get; set; }
+       
+        [Display(Name = "Фото")]
+        public string ImageAvatar { get; set; }
 
         [Required]
         [Phone]
+        [DataType(DataType.PhoneNumber)]
         [Display(Name = "Телефонный номмер")]
         public string Number { get; set; }
 
@@ -96,6 +112,36 @@ namespace DiplomWeb.Models
 
 
     }
+
+    public class EditUsetViewModel
+    {
+      
+        [Required]
+        [Display(Name = "Имя")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [Display(Name = "Фамилия")]
+        public string SecondName { get; set; }
+
+        [Display(Name = "Уведомления по email")]
+        public bool EmailNotifications { get; set; }
+
+        [Required]
+        [Display(Name = "Возраст")]
+        public DateTime DateBirth { get; set; }
+
+        [Display(Name = "Фото")]
+        public string ImageAvatar { get; set; }
+
+        [Required]
+        [Phone]
+        [DataType(DataType.PhoneNumber)]
+        [Display(Name = "Телефонный номмер")]
+        public string Number { get; set; }
+    }
+
+
 
     public class ChangedViewModel
     {

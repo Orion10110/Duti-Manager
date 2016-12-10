@@ -1,0 +1,15 @@
+﻿@model IEnumerable<DiplomWeb.Models.Group> 
+<div class="panel panel-default">
+    <div class="panel-heading">Участники</div>
+    <div class="panel-body">
+        @foreach (DiplomWeb.Models.Group item in Model)
+        {
+            <p>@item.Name:</p>
+            foreach (var user in item.ApplicationUsers)
+            {
+                <a href="">@String.Format("{0} {1}",user.SecondName,user.FirstName )</a>
+            }
+        }
+
+    </div>
+</div>

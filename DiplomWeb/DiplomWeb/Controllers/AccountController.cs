@@ -147,14 +147,26 @@ namespace DiplomWeb.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterViewModel model, HttpPostedFileBase upload = null)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
+                string prefix = Guid.NewGuid().ToString();
+                string fileName = "";
+                if (upload != null)
+                {
+                    // получаем имя файла
+                    fileName = System.IO.Path.GetFileName(upload.FileName);
+                    // сохраняем файл в папку Files в проекте
+                    
+                }
+
+                var user = new ApplicationUser {PhoneNumber=model.Number, UserName = model.UserName, Email = model.Email, DateBirth=model.DateBirth,EmailNotifications=model.EmailNotifications,
+                FirstName=model.FirstName,SecondName=model.SecondName,ImageAvatar= prefix.ToString()+fileName};
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    upload.SaveAs(Server.MapPath("~/Content/UserPhoto/" + fileName));
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // Дополнительные сведения о том, как включить подтверждение учетной записи и сброс пароля, см. по адресу: http://go.microsoft.com/fwlink/?LinkID=320771

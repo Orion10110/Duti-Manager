@@ -7,6 +7,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using DiplomWeb.Models;
+using System.Net;
+using System.Data.Entity;
 
 namespace DiplomWeb.Controllers
 {
@@ -16,6 +18,7 @@ namespace DiplomWeb.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
+        private ApplicationDbContext db = new ApplicationDbContext();
         public ManageController()
         {
         }
@@ -64,6 +67,10 @@ namespace DiplomWeb.Controllers
                 : "";
 
             var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+       
+         
+            ViewBag.User = user;
             var model = new IndexViewModel
             {
                 HasPassword = HasPassword(),
@@ -74,6 +81,52 @@ namespace DiplomWeb.Controllers
             };
             return View(model);
         }
+
+
+        public ActionResult Edit()
+        {
+
+         
+            ApplicationUser applicationUser = db.Users.Find(User.Identity.GetUserId());
+            var model = new EditUsetViewModel {  Number = applicationUser.PhoneNumber,
+                DateBirth =applicationUser.DateBirth,EmailNotifications=applicationUser.EmailNotifications,
+            FirstName=applicationUser.FirstName,ImageAvatar=applicationUser.ImageAvatar,SecondName=applicationUser.SecondName};
+            if (applicationUser == null)
+            {
+                return HttpNotFound();
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(EditUsetViewModel model, HttpPostedFileBase upload = null)
+        {
+            if (ModelState.IsValid)
+            {
+                ApplicationUser appUser = db.Users.Find(User.Identity.GetUserId());
+                appUser.FirstName = model.FirstName;
+                appUser.DateBirth = model.DateBirth;
+                appUser.PhoneNumber = model.Number;
+                appUser.SecondName = model.SecondName;
+                appUser.EmailNotifications = model.EmailNotifications;
+
+                if(upload != null)
+                {
+                    string prefix =Guid.NewGuid().ToString();
+                    string fileName = prefix + System.IO.Path.GetFileName(upload.FileName);
+                    appUser.ImageAvatar = fileName;
+                    upload.SaveAs(Server.MapPath("~/Content/UserPhoto/"  + fileName));
+                }
+
+
+                db.Entry(appUser).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(model);
+        }
+
 
         //
         // POST: /Manage/RemoveLogin
