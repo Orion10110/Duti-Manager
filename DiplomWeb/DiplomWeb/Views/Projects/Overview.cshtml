@@ -1,0 +1,44 @@
+﻿@model DiplomWeb.Models.Project
+
+
+    <div class="col-md-6">
+
+        <div class="well">
+
+
+            <p>@Model.DateStart</p>
+            <p>@Model.DataFinal</p>
+            <div>
+                <span class="pull-left">Приоретет: @Model.Priority</span>
+                <span class="pull-right">Автор: @Model.ApplicationUser.SecondName @Model.ApplicationUser.FirstName</span>
+            </div>
+            <div class="clearfix"></div>
+            <h4>Описание</h4>
+            <p>@Html.Raw(Model.Description)</p>
+            <div>
+                Файлы:
+                @foreach (DiplomWeb.Models.FilesCRM item in Model.FilesCRMs)
+                {
+
+
+                    <a href="~/Files/@item.Name">@item.FileName</a>
+
+                }
+            </div>
+            <div></div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div id="members">
+        
+        </div>
+    </div>
+<script>
+    $.ajax({
+        url: '@Url.Action("MembersProject",new { id=Model.Id})',
+        success: function (html) {
+            $('#members').append(html);
+        }
+    });
+</script>
+

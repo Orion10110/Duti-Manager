@@ -21,8 +21,11 @@ namespace DiplomWeb.Controllers
             var userId = User.Identity.GetUserId();
 
             List<TaskOfProject> tasks = db.Projects.Find(id).TasksOfProject.Where(p => p.ForWhomId == userId || p.FromWhomId == userId).ToList();
-            return View(tasks);
+            return PartialView(tasks);
         }
+
+
+
 
 
         // GET: TaskOfProjects
@@ -51,9 +54,10 @@ namespace DiplomWeb.Controllers
         public ActionResult Create(int id)
         {
             ViewBag.IdProject= id;
-            ViewBag.ForWhomId = new SelectList(db.Users, "Id", "FirstName");
-            ViewBag.FromWhomId = new SelectList(db.Users, "Id", "FirstName");
-            return View();
+            ViewBag.ForWhomId = new SelectList(db.Users, "Id", "SecondName");
+            List<ApplicationUser> users = db.Projects.Find(id).Groups.SelectMany(t => t.ApplicationUsers).ToList();
+            ViewBag.Watchers = users;
+            return PartialView();
         }
 
         // POST: TaskOfProjects/Create
@@ -61,19 +65,41 @@ namespace DiplomWeb.Controllers
         // сведения см. в статье http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,FromWhomId,ForWhomId,Name,Description,ProjectId")] TaskOfProject taskOfProject)
+        public JsonResult Create([Bind(Include = "id,FromWhomId,ForWhomId,Name,Description,ProjectId,TaskStatus")] TaskOfProject taskOfProject,List<string> users, IEnumerable<HttpPostedFileBase> files = null)
         {
             if (ModelState.IsValid)
             {
+                List<ApplicationUser> watchers= db.Users.Where(u => users.Contains(u.Id)).ToList();
+                taskOfProject.Watchers.AddRange(watchers);
+                taskOfProject.FromWhomId = User.Identity.GetUserId();
                 db.TasksOfProject.Add(taskOfProject);
+                SaveFiles(files, taskOfProject);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return Json(new { message = "Задача добавлена" }, JsonRequestBehavior.DenyGet);
+            }
+          return Json(new {message="Ошибка, задача не создана"},JsonRequestBehavior.DenyGet);
+        }
+
+
+
+        public void SaveFiles(IEnumerable<HttpPostedFileBase> files, TaskOfProject task)
+        {
+
+            foreach (HttpPostedFileBase item in files)
+            {
+                if (item != null)
+                {
+                    string prefix = Guid.NewGuid().ToString() + item.FileName;
+                    FilesCRM file = new FilesCRM() { Name = prefix, FileName = item.FileName };
+                    task.FilesCRMs.Add(file);
+                    item.SaveAs(Server.MapPath("~/Files/" + prefix));
+                }
             }
 
-            ViewBag.ForWhomId = new SelectList(db.Users, "Id", "FirstName", taskOfProject.ForWhomId);
-            ViewBag.FromWhomId = new SelectList(db.Users, "Id", "FirstName", taskOfProject.FromWhomId);
-            return View(taskOfProject);
         }
+
+
+
 
         // GET: TaskOfProjects/Edit/5
         public ActionResult Edit(int? id)

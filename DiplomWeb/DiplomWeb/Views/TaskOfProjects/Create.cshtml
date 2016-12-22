@@ -1,27 +1,14 @@
 ﻿@model DiplomWeb.Models.TaskOfProject
-
-@{
-    ViewBag.Title = "Create";
-}
-
-<h2>Create</h2>
-
-@using (Html.BeginForm()) 
+@using DiplomWeb.Models
+@using (Html.BeginForm("Create", "TaskOfProjects", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data",id="CreateTask" }))
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>TaskOfProject</h4>
+        <h4>Добавить задачу</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.FromWhomId, "FromWhomId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("FromWhomId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.FromWhomId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
+       
         <div class="form-group">
             @Html.LabelFor(model => model.ForWhomId, "ForWhomId", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -30,42 +17,98 @@
             </div>
         </div>
 
+    
+
+
         <div class="form-group">
             @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    @Html.Hidden("ProjectId", (object)ViewBag.IdProject.ToString())
             </div>
         </div>
 
-      
-        @Html.Hidden("ProjectId",new { ViewBag.IdProject })
-
+        <div class="form-group">
+            @Html.LabelFor(model => model.DateStart, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.DateStart, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DateStart, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.DataFinal, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.DataFinal, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DataFinal, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EnumDropDownListFor(model => model.Priority, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Priority, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.TaskStatus, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EnumDropDownListFor(model => model.TaskStatus, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.TaskStatus, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2 " })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Description, htmlAttributes: new { @class = "form-control", id= "tiny" })
                 @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
             </div>
+        </div>
+        @foreach (ApplicationUser item in ViewBag.Watchers)
+        {
+
+
+            <div class="checkbox">
+                @Html.CheckBox("users", false, new { value = item.Id.ToString(), id = item.Id.ToString() })
+                @Html.Label(item.Id, String.Format("{0} {1}", item.SecondName, item.FirstName), new { @for = item.Id })
+
+            </div>
+
+        }
+        <div class="form-group">
+            <div style="position:relative;">
+                <label>Файлы</label>
+                <a class='btn' href='javascript:;'>
+                    Выберите файл...
+                    <input type="file" id="fileUploader" multiple class="form-control" name="files" size="40"
+                           style="position:absolute;z-index:2;top:0;
+                                left:0;filter: alpha(opacity=0); opacity:0;
+                                background-color:transparent;color:transparent;">
+                </a>
+                <span id="upload-file-info"></span>
+            </div>
+
+
+
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input  type="submit" value="Create" class="btn btn-default" />
             </div>
         </div>
     </div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+<script>
+    $("#fileUploader").change(function () {
+        var files = $(this)[0].files;
+        for (var i = 0; i < files.length; i++) {
+            $("#upload-file-info").append("<span class='label label-info' style='margin-left:10px' >" + files[i].name + "</span>");
+        }
+    });
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-    @Scripts.Render("~/bundles/jqueryval")
-    @Scripts.Render("~/bundles/tinymce")
-    @Scripts.Render("~/bundles/scripts")
-
-}
+</script>

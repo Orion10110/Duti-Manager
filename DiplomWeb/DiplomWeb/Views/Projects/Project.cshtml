@@ -2,13 +2,32 @@
 @{
     ViewBag.Title = "Project";
 }
+@section Styles{
+    @Styles.Render("~/Content/tabs")
+}
 
+<ul class="tab">
+    <li><a id="overwiew" href='@Url.Action("Overview",new { id =Model.Id})' class="tablinks" >Обзор</a></li>
+    <li><a href='@Url.Action("Tasks","TaskOfProjects",new { id =Model.Id})' class="tablinks" >Задачи</a></li>
+    <li><a href='@Url.Action("Create","TaskOfProjects",new { id =Model.Id})' class="tablinks" >Новая задача</a></li>
+   @if(ViewBag.Admin){
+    <li><a href='@Url.Action("EditeV","Projects",new { id =Model.Id})' class="tablinks">Редактировать</a></li>
+    <li><a href='@Url.Action("Members","Projects",new { id =Model.Id})' class="tablinks">Участники</a></li>
+    }
+   
+</ul>
 <div class="container">
 
     <div class="row">
+        <div id="message"></div>
         <h2>@Model.Name</h2>
+         
+        <div id="view">
 
-        <div class="col-md-6">
+        </div>
+
+
+        @*<div class="col-md-6">
 
             <div class="well">
              
@@ -35,21 +54,64 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div id="members"></div> </div>
+            <div id="members"></div> </div>*@
     </div>
 </div>
 
-
 @section Scripts {
-   <script>
-       $(document).ready(function () {
-                       $.ajax({
-                               url: '@Url.Action("MembersProject", "Projects",new { id=Model.Id},null)',
-                       success: function(html){
-                           $('#members').append(html);
-                       }
-                   }); 
-       });
+
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/bundles/tinymce")
+@Scripts.Render("~/bundles/scripts")
+    <script>
+
+        $(document).ready(function () {
+         
+            $.ajax({
+                url: '@Url.Action("Overview",new { id =Model.Id})',
+                success: function (html) {
+                    $('#view').append(html);
+
+                }
+            });
+
+
+        });
+        $("#view").on("submit", function (event) {
+            event.preventDefault();
+            var url = $('#view #CreateTask')[0].action;
+            var data = $('#view #CreateTask').serialize();
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: data,
+                dataType: "json",
+                success: function (html) {
+                    $("#overwiew").click();
+                    $('#message').empty().prepend('<div class="alert alert-success">' + html.message + '</div>').show();
+                    setTimeout(function (e) { $('#message').hide(1000).empty(); }, 4000);
+                }
+            });
+        });
+
+
+
+
+
+        $(".tablinks").click(function (e) {
+            e.preventDefault();
+            var url = $(this).attr("href");
+            $.ajax({
+                url: url,
+                success: function (html) {
+
+                    $('#view').empty().append(html);
+                    tinymce.remove();
+                    tinymce.init({ selector: 'textarea' });
+                }
+            });
+        });
     </script>
 
 }

@@ -30,7 +30,8 @@ namespace DiplomWeb.Models
         public DateTime? DataFinal { get; set; }
         [Display(Name = "Приоритет")]
         public Priority Priority { get; set; }
-
+        [Display(Name = "Статус")]
+        public TaskStatus TaskStatus { get; set; }
 
         [Display(Name = "Описание")]
         [AllowHtml]
@@ -39,14 +40,18 @@ namespace DiplomWeb.Models
         public TaskOfProject()
         {
             this.FilesCRMs = new HashSet<FilesCRM>();
+            this.Watchers = new List<ApplicationUser>();
         }
         [Display(Name = "От кого")]
         public virtual ApplicationUser FromWhom { get; set; }
-        [Display(Name = "Кому")]
+        [Display(Name = "Назначена")]
         public virtual ApplicationUser ForWhom { get; set; }
         [Display(Name = "Прокект")]
         public virtual Project Project { get; set; }
         [Display(Name = "Файлы")]
-        public virtual ICollection<FilesCRM> FilesCRMs { get;set;}
+        public virtual ICollection<FilesCRM> FilesCRMs { get; set; }
+        [Display(Name = "Наблюдатели")]
+        public virtual List<ApplicationUser> Watchers { get; set; }
+
     }
 }

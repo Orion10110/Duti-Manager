@@ -1,0 +1,70 @@
+﻿@model IEnumerable<DiplomWeb.Models.Vigil>
+@using Newtonsoft.Json;
+@{
+    ViewBag.Title = "Дежурства";
+}
+@section Styles{
+
+<link type="text/css" rel="stylesheet" href="~/Content/scheduler_8.css" />    
+
+   @Styles.Render("~/Content/styles")
+}
+
+<h2> @ViewBag.Name</h2>
+
+<div class="row">
+   
+    <div class="col-md-12 hidden-print">
+        <div id="dp" class="hidden-print"></div>
+    </div>
+    <div class="space hidden-print" >
+        <a href="#" id="print-button">Print</a>
+    </div>
+
+ 
+</div>
+<div id="export"></div>
+
+
+
+@section Scripts{
+<script src="~/Scripts/daypilot-all.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+    var dp = new DayPilot.Scheduler("dp");
+
+    dp.cssClassPrefix = "scheduler_8";
+
+
+
+
+    // behavior and appearance
+    dp.eventHeight = 25;
+    dp.headerHeight = 25;
+    // view
+    dp.locale = "ru-ru";
+    dp.startDate = new DayPilot.Date("2016-12-12").firstDayOfMonth();  // or just dp.startDate = "2013-03-25";
+    dp.cellGroupBy = "Month";
+    dp.days = dp.startDate.daysInMonth();
+    dp.cellDuration = 1440; // one day
+    dp.columnWidthSpec = "Fixed";
+    dp.cellWidthSpec = 'Auto';
+    dp.resources = @Html.Raw(JsonConvert.SerializeObject(ViewBag.Users));
+    dp.events.list =   @Html.Raw(JsonConvert.SerializeObject(ViewBag.Events)); 
+
+
+    dp.init();
+    $( "#dp div div.scheduler_8_corner div:contains('DEMO') " ).remove();
+
+
+
+    $("#print-button").click(function(ev) {
+        ev.preventDefault();
+        var area = "viewport";
+        var element = dp.export("SVG").toElement();
+        $(element).addClass('visible-print');
+        $("#export").html('').append(element);
+        window.print();
+    });
+</script>
+}

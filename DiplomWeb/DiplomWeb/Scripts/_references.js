@@ -2,6 +2,7 @@
 /// <reference path="ai.0.15.0-build58334.min.js" />
 /// <reference path="bootstrap.js" />
 /// <reference path="daterangepicker.js" />
+/// <reference path="daypilot-all.min.js" />
 /// <reference path="fullcalendar.js" />
 /// <reference path="fullcalendar/gcal.js" />
 /// <reference path="fullcalendar/locale-all.js" />

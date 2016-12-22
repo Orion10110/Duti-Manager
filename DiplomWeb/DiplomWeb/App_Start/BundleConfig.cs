@@ -29,10 +29,14 @@ namespace DiplomWeb
             bundles.Add(new ScriptBundle("~/bundles/calendar").Include(
                     "~/Scripts/moment.js",
                     "~/Scripts/fullcalendar.js",
-                    "~/Scripts/fullcalendar/locale/ru.js",
-                    "~/Scripts/main.js"
+                    "~/Scripts/fullcalendar/locale/ru.js"
+               
                     ));
+            bundles.Add(new ScriptBundle("~/main").Include(
+                  "~/Scripts/main.js"
 
+                   ));
+           
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
@@ -40,6 +44,7 @@ namespace DiplomWeb
                     "~/Content/fullcalendar.css"));
             bundles.Add(new StyleBundle("~/Content/styles").Include(
                    "~/Content/styles.css"));
+            bundles.Add(new StyleBundle("~/Content/tabs").Include("~/Content/tabs.css"));
         }
     }
 }

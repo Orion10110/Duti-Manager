@@ -6,6 +6,8 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using System.Web.Mvc;
 using System.Collections.Generic;
 using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace DiplomWeb.Models
 {
@@ -14,21 +16,29 @@ namespace DiplomWeb.Models
     public class ApplicationUser : IdentityUser
     {
 
-
+        [Display(Name = "Имя")]
         public string FirstName { get; set; }
-
+        [Display(Name = "Фамилия")]
         public string SecondName { get; set; }
-
+        [Display(Name = "Оповещение по e-mail")]
         public bool EmailNotifications { get; set; }
-
+        [Display(Name = "Дата рождения")]
         public DateTime DateBirth { get; set; }
-
+        [DefaultValue("24")]
+        [Display(Name = "Количество дней отпуска")]
+        public int CountHolidayDays { get; set; }
+        [Display(Name = "Фото")]
         public string ImageAvatar { get; set; }
         public ApplicationUser()
         {
             this.RecordVigils = new HashSet<RecordVigil>();
             this.Groups = new HashSet<Group>();
             this.Projects = new HashSet<Project>();
+            this.WatcherOfProjects = new HashSet<TaskOfProject>();
+            this.ForWhomTask = new HashSet<TaskOfProject>();
+            this.FromWhomTask = new HashSet<TaskOfProject>();
+            this.Holidays = new HashSet<Holiday>();
+            this.VigilGroups = new HashSet<VigilGroups>();
         }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
@@ -38,34 +48,41 @@ namespace DiplomWeb.Models
             // Здесь добавьте утверждения пользователя
             return userIdentity;
         }
+        public virtual ICollection<VigilGroups> VigilGroups { get; set; }
+
+        public virtual ICollection<Holiday> Holidays { get; set; }
 
         public virtual ICollection<Project> Projects { get; set; }
 
         public virtual ICollection<TaskOfProject> ForWhomTask { get; set; }
 
         public virtual ICollection<TaskOfProject> FromWhomTask { get; set; }
+
+        public virtual ICollection<TaskOfProject> WatcherOfProjects { get; set; }
         public virtual ICollection<RecordVigil> RecordVigils { get; set; }
 
         public virtual ICollection<Group> Groups { get; set; }
+
+
     }
 
     public class ApplicationRole : IdentityRole
     {
         public ApplicationRole() : base() {
-            this.Vigils = new HashSet<Vigil>();
         }
 
         public ApplicationRole(string name) : base(name)
         {
-            this.Vigils = new HashSet<Vigil>();
         }
 
-        public virtual ICollection<Vigil> Vigils { get; set; }
+     
 
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<VigilGroups> VigilGroups { get; set; }
+
         public DbSet<Vigil> Vigils { get; set; }
         public DbSet<ApplicationRole> ApplicationRole { get; set; }
 
@@ -74,6 +91,8 @@ namespace DiplomWeb.Models
         public DbSet<TaskOfProject> TasksOfProject { get; set; }
 
         public DbSet<Group> Groups { get; set; }
+
+        public DbSet<Holiday> Holidays { get; set; }
         
         public DbSet<RecordVigil> RecordVigils { get; set; }
         public ApplicationDbContext()
@@ -97,6 +116,11 @@ namespace DiplomWeb.Models
                .WithMany(t => t.FromWhomTask)
                .HasForeignKey(m => m.FromWhomId)
                .WillCascadeOnDelete(false);
+
+
+            modelBuilder.Entity<TaskOfProject>()
+              .HasMany(c => c.Watchers)
+             .WithMany(t => t.WatcherOfProjects);
         }
 
         public static ApplicationDbContext Create()

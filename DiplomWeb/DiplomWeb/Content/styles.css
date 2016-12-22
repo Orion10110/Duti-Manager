@@ -3,3 +3,22 @@
 .display-none{
     display:none;
 }
+
+
+.printShow{
+    display:none;
+}
+
+
+ @media print {
+      .printShow{
+          display:inline-block;
+      }
+      .printHide{
+             display:none;
+        }
+      .container {
+        max-width: 1400px !important;
+    }
+      @page {size: landscape}
+}

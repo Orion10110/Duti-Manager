@@ -8,11 +8,29 @@ using System.Web;
 using System.Web.Mvc;
 using DiplomWeb.Models;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace DiplomWeb.Controllers
 {
+
+   
+
     public class ProjectsController : Controller
     {
+        private ApplicationUserManager _userManager;
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+
+
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Projects
@@ -38,29 +56,52 @@ namespace DiplomWeb.Controllers
         }
         public ActionResult Index()
         {
+
             var user= db.Users.Find(User.Identity.GetUserId());
             List<ProjectInfo> projects =user.Groups.Select(t => new ProjectInfo
               {Id =t.Project.Id,Name = t.Project.Name}).ToList();
+            if (UserManager.IsInRole(user.Id, "Admin"))
+            {
+                projects = db.Projects.Select(t=>new ProjectInfo {
+                    Id =t.Id,Name=t.Name+" "}).ToList();
+            }
             return View(projects);
         }
 
 
-      
-
-        public ActionResult Index(int? id)
+        public ActionResult Overview(int id)
         {
-            if (id == null)
+            Project project = db.Projects.Find(id);
+            if(project == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return HttpNotFound();
             }
+            return PartialView(project);
+        }
+
+        public ActionResult Project(int id)
+        {
+            
             Project project = db.Projects.Find(id);
             if (project == null)
             {
                 return HttpNotFound();
             }
+            var user = db.Users.Find(User.Identity.GetUserId());
+            ViewBag.Admin = false;
+            if (UserManager.IsInRole(user.Id, "Admin") || project.ApplicationUser.UserName.Equals(user.UserName))
+            {
+              
+                ViewBag.Admin = true;
+            }
+
             return View("Project",project);
         }
 
+        public ActionResult Manager()
+        {
+            return View(db.Projects.ToList());
+        }
 
         public ActionResult Members(int? id)
         {

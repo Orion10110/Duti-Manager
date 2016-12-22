@@ -1,0 +1,292 @@
+﻿@using Newtonsoft.Json;
+@{
+    ViewBag.Title = "Мои отпуска";
+}
+@section Styles{
+    @Styles.Render("~/Content/calendar")
+}
+<h2>Мои отпуска</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div id="calendar"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form class="form-horizontal" id="addEvent" method="POST" action="@Url.Action("SaveDate")">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Add Event</h4>
+                </div>
+                <div class="modal-body">
+                   
+                   
+
+                    <div class="form-group">
+                        <label for="start" class="col-sm-2 control-label">Дата начала отпуска</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="DateStart" class="form-control" id="start" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="end" class="col-sm-2 control-label">Дата окончания</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="DataFinal" class="form-control" id="end" readonly>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default closing" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="ModalEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+             
+                  
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <a id="DeleteLink" href="@Url.Action("DeleteEvent")">Delete</a>
+                        </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    @Scripts.Render("~/bundles/calendar")
+    <script>
+        var calendar;
+        $(function () {
+              calendar = $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month'
+                },
+                selectable: true,
+                selectHelper: true,
+                editable: true,
+                select: function (start, end) {
+                   //alert( moment(start).day());
+                   //alert(moment(end).day());
+                    $('#ModalAdd #start').val(moment(start).format('YYYY-MM-DD HH:mm:ss'));
+                    $('#ModalAdd #end').val(moment(end).format('YYYY-MM-DD HH:mm:ss'));
+                    $('#ModalAdd').modal('show');
+                },
+
+                eventRender: function (event, element) {
+                    element.bind('dblclick', function () {
+                        if (event.editable!==false) {
+                            $('#DeleteLink').attr('data-delet-id', event._id);
+                            $('#ModalEdit').modal('show');
+                        }
+                    });
+                },
+                eventDrop: function (event, delta, revertFunc) { // si changement de position
+
+                    edit(event);
+
+                },
+                eventResize: function (event, dayDelta, minuteDelta, revertFunc) { // si changement de longueur
+
+                    edit(event);
+
+                }
+
+                //eventDrop: function (event, delta) {
+                //    start = event.start.format();
+                //    end = event.end.format();
+                //    $.ajax({
+                //        url: '/RecordVigils/UpdateDate',
+                //        data: {startAt:start,endAt:end,title:event.title},
+                //        type: "POST",
+                //        success: function (json) {
+                //            alert("OK");
+                //        }
+                //    });
+                //},
+                //eventResize: function (event) {
+                //    start = event.start.format();
+                //    end = event.end.format();
+                //    $.ajax({
+                //        url: '/RecordVigils/UpdateDate',
+                //        data: { startAt: start, endAt: end, title: event.title},
+                //        type: "POST",
+                //        success: function (json) {
+                //            alert("OK");
+                //        }
+                //    });
+
+                //}
+            });
+            GetEvents();
+            $('#addEvent').submit(function (e) {
+                var $form = $(this);
+                $.ajax({
+                    type: $form.attr('method'),
+                    url: $form.attr('action'),
+                    data: $form.serialize()
+                }).done(function (data) {
+                    console.log('success');
+                    calendar.fullCalendar('renderEvent',
+                         {
+                             id:data.Id,
+                             title: data.title,
+                             start: new Date(parseInt(data.start.substr(6))),
+                             end: new Date(parseInt(data.end.substr(6))),
+                             color:data.color,
+                             allDay:true
+                         },
+                         true // make the event "stick"
+                         );
+                    $("#ModalAdd").find(".closing").trigger("click");
+                }).fail(function () {
+                    console.log('fail');
+
+                });
+                //отмена действия по умолчанию для кнопки submit
+                e.preventDefault();
+            });
+
+            //$('#changeEvent').submit(function (e) {
+            //    var $form = $(this);
+            //    $.ajax({
+            //        type: $form.attr('method'),
+            //        url: $form.attr('action'),
+            //        data: $form.serialize()
+            //    }).done(function (data) {
+            //        console.log('success');
+                 
+            //        var event =  calendar.fullCalendar('clientEvents', data.id);
+            //        event[0].title = data.title;
+            //        event[0].color = data.color;
+            //        event[0].description = data.description;
+            //        calendar.fullCalendar('updateEvent', event[0]);
+            //        //}
+
+            //        $("#ModalEdit").find(".closing").trigger("click");
+            //    }).fail(function () {
+            //        console.log('fail');
+
+            //    });
+            //    //отмена действия по умолчанию для кнопки submit
+            //    e.preventDefault();
+            //});
+
+            $('#DeleteLink').click(function (e) {
+
+                var url = $(this).attr('href');
+                var id = $(this).attr('data-delet-id');
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data:{id:id},
+                }).done(function (data) {
+                    console.log('success');
+                    calendar.fullCalendar( 'removeEvents', data.id)
+
+
+
+                    $("#ModalEdit").find(".closing").trigger("click");
+                }).fail(function () {
+                    console.log('fail');
+
+                });
+                //отмена действия по умолчанию для кнопки submit
+                e.preventDefault();
+            });
+        });
+
+        function edit(event) {
+            start = event.start.format('YYYY-MM-DD HH:mm:ss');
+            if (event.end) {
+                end = event.end.format('YYYY-MM-DD HH:mm:ss');
+            } else {
+                end = start;
+            }
+
+            id = event.id;
+
+            $.ajax({
+                url: '/Holidays/UpdateDate',
+                type: "POST",
+                data: {id:id, startAt: start, endAt: end },
+                success: function (rep) {
+
+                    alert('Saved');
+
+                }
+            });
+        }
+
+        $('#addEvent').submit(function (e) {
+            var $form = $(this);
+            $.ajax({
+                type: $form.attr('method'),
+                url: $form.attr('action'),
+                data: $form.serialize()
+            }).done(function (data) {
+                console.log('success');
+                calendar.fullCalendar('renderEvent',
+                     {
+                         id:data.Id,
+                         title: data.title,
+                         start: new Date(parseInt(data.start.substr(6))),
+                         end: new Date(parseInt(data.end.substr(6))),
+                         allDay:true
+                     },
+                     true // make the event "stick"
+                     );
+                $("#ModalAdd").find(".closing").trigger("click");
+            }).fail(function () {
+                console.log('fail');
+
+            });
+            //отмена действия по умолчанию для кнопки submit
+            e.preventDefault();
+        });
+
+        function GetEvents() {
+            $.ajax({
+                async:false,
+                url: '/Holidays/GetEvents',
+                success: function (data) {
+                    $.each(data,function(index,value){
+                        calendar.fullCalendar('renderEvent',
+                    {
+                        id: value.id,
+                        title: value.title,
+                        start: new Date(parseInt(value.start.substr(6))),
+                        end: new Date(parseInt(value.end.substr(6))),
+                        editable: value.editable,
+                        allDay:true
+                    },
+                    true // make the event "stick"
+                    );
+
+
+                  
+                    })
+                }
+
+            });
+        }
+
+
+    </script>
+    
+}
