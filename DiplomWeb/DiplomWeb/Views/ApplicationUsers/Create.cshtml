@@ -14,6 +14,27 @@
 
         @Html.ValidationSummary("", new { @class = "text-danger" })
         <div class="form-group">
+            @Html.LabelFor(model => model.SecondName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SecondName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CountHolidayDays, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Patronymic, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Patronymic, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Patronymic, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
             @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
                 @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
@@ -26,10 +47,17 @@
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.Age, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.DateBirth, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Age, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Age, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.DateBirth, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DateBirth, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CountHolidayDays, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CountHolidayDays, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CountHolidayDays, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
@@ -56,9 +84,9 @@
                 <input type="submit" class="btn btn-default" value="Регистрация" />
             </div>
         </div>
-        </div>
-        }
+    </div>
+}
 
-        @section Scripts {
-            @Scripts.Render("~/bundles/jqueryval")
-        }
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

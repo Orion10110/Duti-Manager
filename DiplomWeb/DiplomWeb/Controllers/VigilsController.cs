@@ -17,8 +17,7 @@ namespace DiplomWeb.Controllers
         // GET: Vigils
         public ActionResult Index()
         {
-            var vigils = db.Vigils.Include(v => v.ApplicationRole);
-            return View(vigils.ToList());
+            return View(db.Vigils.ToList());
         }
 
         // GET: Vigils/Details/5
@@ -39,7 +38,6 @@ namespace DiplomWeb.Controllers
         // GET: Vigils/Create
         public ActionResult Create()
         {
-            ViewBag.ApplicationRoleID = new SelectList(db.Roles, "Id", "Name");
             return View();
         }
 
@@ -48,16 +46,17 @@ namespace DiplomWeb.Controllers
         // сведения см. в статье http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,ApplicationRoleID")] Vigil vigil)
+        public ActionResult Create([Bind(Include = "Name")] Vigil vigil, IEnumerable<string> days)
         {
             if (ModelState.IsValid)
             {
+                string d = String.Join(",", days.Where(s=>s!="false"));
+                vigil.Days = d;
                 db.Vigils.Add(vigil);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ApplicationRoleID = new SelectList(db.Roles, "Id", "Name", vigil.ApplicationRoleID);
             return View(vigil);
         }
 
@@ -73,7 +72,6 @@ namespace DiplomWeb.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.ApplicationRoleID = new SelectList(db.Roles, "Id", "Name", vigil.ApplicationRoleID);
             return View(vigil);
         }
 
@@ -82,15 +80,16 @@ namespace DiplomWeb.Controllers
         // сведения см. в статье http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,ApplicationRoleID")] Vigil vigil)
+        public ActionResult Edit([Bind(Include = "Id,Name")] Vigil vigil, IEnumerable<string> days)
         {
             if (ModelState.IsValid)
             {
+                string d = String.Join(",", days.Where(s => s != "false"));
+                vigil.Days = d;
                 db.Entry(vigil).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.ApplicationRoleID = new SelectList(db.Roles, "Id", "Name", vigil.ApplicationRoleID);
             return View(vigil);
         }
 
@@ -119,6 +118,50 @@ namespace DiplomWeb.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
+
+
+
+        public ActionResult Members(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Vigil vigil= db.Vigils.Find(id);
+
+            if (vigil == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Users = db.Users.ToList();
+            ViewBag.VigilId = id;
+            return View();
+        }
+        [HttpPost, ActionName("Members")]
+        public ActionResult Members(IEnumerable<string> users, int id)
+        {
+            Vigil vigil = db.Vigils.Find(id);
+
+            List<ApplicationUser> us = db.Users.Where(j => users.Contains(j.Id)).ToList();
+            if (us.Count > 0)
+            {
+                vigil.ApplicationUsers.AddRange(us);
+                db.Entry(vigil).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            return RedirectToAction("Index");
+        }
+
+
+
+
+        public ActionResult VigilMembers(int id)
+        {
+            Vigil vg = db.Vigils.Find(id);
+            return PartialView(vg.ApplicationUsers.ToList());
+        }
+
+
 
         protected override void Dispose(bool disposing)
         {

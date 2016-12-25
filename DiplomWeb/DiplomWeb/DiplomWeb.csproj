@@ -89,6 +89,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Office.Interop.Word, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -208,7 +211,6 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\ApplicationRolesController.cs" />
     <Compile Include="Controllers\ApplicationUsersController.cs" />
     <Compile Include="Controllers\HolidaysController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -216,7 +218,6 @@
     <Compile Include="Controllers\ProjectsController.cs" />
     <Compile Include="Controllers\TaskOfProjectsController.cs" />
     <Compile Include="Controllers\UserVigilsController.cs" />
-    <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\VigilsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -317,8 +318,29 @@
     <Compile Include="Migrations\201612212216553_Added count day holidays.Designer.cs">
       <DependentUpon>201612212216553_Added count day holidays.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612222211091_Rexonstract.cs" />
+    <Compile Include="Migrations\201612222211091_Rexonstract.Designer.cs">
+      <DependentUpon>201612222211091_Rexonstract.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612222224054_ашч.cs" />
+    <Compile Include="Migrations\201612222224054_ашч.Designer.cs">
+      <DependentUpon>201612222224054_ашч.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612241318250_Fix reconstruct.cs" />
+    <Compile Include="Migrations\201612241318250_Fix reconstruct.Designer.cs">
+      <DependentUpon>201612241318250_Fix reconstruct.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612241419585_Default VAlue.cs" />
+    <Compile Include="Migrations\201612241419585_Default VAlue.Designer.cs">
+      <DependentUpon>201612241419585_Default VAlue.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612251739598_added patronymic.cs" />
+    <Compile Include="Migrations\201612251739598_added patronymic.Designer.cs">
+      <DependentUpon>201612251739598_added patronymic.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\DateSelect.cs" />
     <Compile Include="Models\FIlesCRM.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\HolidayStatus.cs" />
@@ -331,7 +353,6 @@
     <Compile Include="Models\TaskOfProject.cs" />
     <Compile Include="Models\TaskStatus.cs" />
     <Compile Include="Models\Vigil.cs" />
-    <Compile Include="Models\VigilGroups.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -583,19 +604,12 @@
     <Content Include="Views\ApplicationRoles\Edit.cshtml" />
     <Content Include="Views\ApplicationRoles\Delete.cshtml" />
     <Content Include="Views\ApplicationUsers\Index.cshtml" />
-    <Content Include="Views\ApplicationUsers\Create.cshtml" />
-    <Content Include="Views\ApplicationUsers\Edit.cshtml" />
     <Content Include="Views\ApplicationUsers\Delete.cshtml" />
     <Content Include="Views\ApplicationUsers\Details.cshtml" />
     <Content Include="Views\ApplicationUsers\AddRole.cshtml" />
     <Content Include="Views\RecordVigils\ViewCalendar.cshtml" />
     <Content Include="Views\UserVigils\Index.cshtml" />
     <Content Include="Views\UserVigils\Create.cshtml" />
-    <Content Include="Views\Vigils\Create.cshtml" />
-    <Content Include="Views\Vigils\Delete.cshtml" />
-    <Content Include="Views\Vigils\Details.cshtml" />
-    <Content Include="Views\Vigils\Edit.cshtml" />
-    <Content Include="Views\Vigils\Index.cshtml" />
     <Content Include="Views\Manage\Edit.cshtml" />
     <Content Include="Views\Projects\Create.cshtml" />
     <Content Include="Views\Projects\Delete.cshtml" />
@@ -626,7 +640,6 @@
     <Content Include="Views\TaskOfProjects\Tasks.cshtml" />
     <Content Include="Views\UserVigils\Sheduler.cshtml" />
     <Content Include="Views\UserVigils\Vigil.cshtml" />
-    <Content Include="Views\Home\Java.cshtml" />
     <Content Include="Views\Projects\Manager.cshtml" />
     <Content Include="Views\Holidays\Create.cshtml" />
     <Content Include="Views\Holidays\Delete.cshtml" />
@@ -634,11 +647,22 @@
     <Content Include="Views\Holidays\Edit.cshtml" />
     <Content Include="Views\Holidays\List.cshtml" />
     <Content Include="Views\Holidays\Index.cshtml" />
+    <Content Include="Views\Vigils\Create.cshtml" />
+    <Content Include="Views\Vigils\Delete.cshtml" />
+    <Content Include="Views\Vigils\Details.cshtml" />
+    <Content Include="Views\Vigils\Edit.cshtml" />
+    <Content Include="Views\Vigils\Index.cshtml" />
+    <Content Include="Views\Vigils\Members.cshtml" />
+    <Content Include="Views\Vigils\VigilMembers.cshtml" />
+    <Content Include="Views\ApplicationUsers\Create.cshtml" />
+    <Content Include="Views\ApplicationUsers\Edit.cshtml" />
+    <Content Include="Views\ApplicationUsers\WriteUser.cshtml" />
+    <Content Include="Views\UserVigils\View.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\UserPhoto\" />
-    <Folder Include="Files\" />
+    <Folder Include="Files\doc\" />
     <Folder Include="Scripts\fullcalendar\locale\" />
     <Folder Include="Scripts\langs\" />
     <Folder Include="Scripts\plugins\" />
@@ -725,6 +749,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612212216553_Added count day holidays.resx">
       <DependentUpon>201612212216553_Added count day holidays.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612222211091_Rexonstract.resx">
+      <DependentUpon>201612222211091_Rexonstract.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612222224054_ашч.resx">
+      <DependentUpon>201612222224054_ашч.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612241318250_Fix reconstruct.resx">
+      <DependentUpon>201612241318250_Fix reconstruct.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612241419585_Default VAlue.resx">
+      <DependentUpon>201612241419585_Default VAlue.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612251739598_added patronymic.resx">
+      <DependentUpon>201612251739598_added patronymic.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

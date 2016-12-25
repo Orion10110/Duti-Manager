@@ -161,7 +161,7 @@ namespace DiplomWeb.Controllers
                     
                 }
 
-                var user = new ApplicationUser {PhoneNumber=model.Number, UserName = model.UserName, Email = model.Email, DateBirth=model.DateBirth,EmailNotifications=model.EmailNotifications,
+                var user = new ApplicationUser {PhoneNumber=model.Number, UserName = model.UserName, Email = model.Email, DateBirth=model.DateBirth,EmailNotifications=model.EmailNotifications, Patronymic=model.Patronymic,
                 FirstName=model.FirstName,SecondName=model.SecondName,ImageAvatar= prefix.ToString()+fileName};
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)

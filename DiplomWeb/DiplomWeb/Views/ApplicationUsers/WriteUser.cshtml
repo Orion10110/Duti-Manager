@@ -1,0 +1,30 @@
+﻿@model IEnumerable<DiplomWeb.Models.ApplicationUser>
+<div class="panel panel-default">
+    <div class="panel-heading">Работники</div>
+    <div class="panel-body">
+     
+
+        <table class="people index">
+            <tbody>
+
+@foreach (DiplomWeb.Models.ApplicationUser item in Model)
+{
+
+                <tr class="hascontextmenu context-menu-selection cm-last">
+                    <td class="avatar">
+                        <img src="~/Content/UserPhoto/@item.ImageAvatar?w=32&h=32&mode=max">
+                    </td>
+                    <td class="name">
+                        <h1><a href="">@item.SecondName @item.FirstName</a></h1>
+                        <h2>
+                            <a href='mailto:@item.Email'>@item.Email</a>
+                            <div>@item.PhoneNumber</div>
+                        </h2>
+                    </td>
+                </tr>
+}
+
+            </tbody>
+        </table>
+    </div>
+</div>

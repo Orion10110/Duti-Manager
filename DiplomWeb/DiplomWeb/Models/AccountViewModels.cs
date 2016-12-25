@@ -77,12 +77,16 @@ namespace DiplomWeb.Models
         [Required]
         [Display(Name = "Фамилия")]
         public string SecondName { get; set; }
+        [Display(Name = "Отчество")]
+        public string Patronymic { get; set; }
 
         [Display(Name = "Уведомления по email")]
         public bool EmailNotifications { get; set; }
 
         [Required]
-         [Display(Name = "Возраст")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Дата рождения")]
         public  DateTime DateBirth { get; set; }
        
         [Display(Name = "Фото")]
@@ -109,7 +113,8 @@ namespace DiplomWeb.Models
         [Display(Name = "Подтверждение пароля")]
         [Compare("Password", ErrorMessage = "Пароль и его подтверждение не совпадают.")]
         public string ConfirmPassword { get; set; }
-
+        [Display(Name = "Количество дней отпуска")]
+        public int CountHolidayDays { get; set; }
 
     }
 
@@ -123,11 +128,15 @@ namespace DiplomWeb.Models
         [Required]
         [Display(Name = "Фамилия")]
         public string SecondName { get; set; }
+        [Display(Name = "Отчество")]
+        public string Patronymic { get; set; }
 
         [Display(Name = "Уведомления по email")]
         public bool EmailNotifications { get; set; }
 
         [Required]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "Возраст")]
         public DateTime DateBirth { get; set; }
 
@@ -145,28 +154,52 @@ namespace DiplomWeb.Models
 
     public class ChangedViewModel
     {
-
-        [System.Web.Mvc.HiddenInput(DisplayValue = false)]
-        public string Id { get; set; }
-
-
         [Required]
         [EmailAddress]
         [Display(Name = "Адрес электронной почты")]
         public string Email { get; set; }
 
         [Required]
-        [Display(Name = "Возраст")]
-        public int Age { get; set; }
+        [Display(Name = "Имя")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [Display(Name = "Фамилия")]
+        public string SecondName { get; set; }
+
+        [Display(Name = "Отчество")]
+        public string Patronymic { get; set; }
+
+        [Display(Name = "Уведомления по email")]
+        public bool EmailNotifications { get; set; }
+
+        [Required]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Дата рождения")]
+        public DateTime DateBirth { get; set; }
+
+        [Display(Name = "Фото")]
+        public string ImageAvatar { get; set; }
 
         [Required]
         [Phone]
+        [DataType(DataType.PhoneNumber)]
         [Display(Name = "Телефонный номмер")]
         public string Number { get; set; }
 
         [Required]
         [Display(Name = "Имя пользователя")]
         public string UserName { get; set; }
+
+
+
+
+        [System.Web.Mvc.HiddenInput(DisplayValue = false)]
+        public string Id { get; set; }
+
+        [Display(Name = "Количество дней отпуска")]
+        public int CountHolidayDays { get; set; }
 
 
         [StringLength(100, ErrorMessage = "Значение {0} должно содержать не менее {2} символов.", MinimumLength = 6)]

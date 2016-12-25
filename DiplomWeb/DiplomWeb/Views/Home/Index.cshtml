@@ -32,3 +32,13 @@
         </div>
     }
 </div>
+
+@{ 
+    List<DiplomWeb.Models.ApplicationUser> users = ViewBag.Users;
+}
+@*<div class="row">@Html.ActionLink("Button 1", "DownloadFile", "UserVigils")</div>*@
+<div class="row">@Html.Partial("~/Views/UserVigils/View.cshtml", new DiplomWeb.Models.DateSelect() { Id=3, DateStart=DateTime.Now, DateEnd=DateTime.Now})</div>
+
+
+
+@*<div class="row">@Html.Partial("~/Views/ApplicationUsers/WriteUser.cshtml",users)</div>*@

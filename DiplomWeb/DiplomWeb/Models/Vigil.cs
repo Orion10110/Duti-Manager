@@ -13,21 +13,28 @@ namespace DiplomWeb.Models
         public Vigil()
         {
             this.RecordVigils = new HashSet<RecordVigil>();
-            this.VigilGroups = new HashSet<VigilGroups>();
+            this.ApplicationUsers = new List<ApplicationUser>();
+            this.Days = "1,2,3,4,5,6,7";
+            //this.VigilGroups = new HashSet<VigilGroups>();
         }
+        [HiddenInput(DisplayValue = false)]
+        public int Id { get; set; }
+
         [Display(Name = "Дни дежурства")]
         public string Days { get; set; }
 
-        [HiddenInput(DisplayValue = false)]
-        public int Id { get; set; }
+        
 
         [Display(Name = "Название")]
         public string Name { get; set; }
 
-        [Display(Name = "Группа")]
+        //[Display(Name = "Группа")]
 
-        public virtual ICollection<VigilGroups> VigilGroups { get; set; }
+        //public virtual ICollection<VigilGroups> VigilGroups { get; set; }
+        [Display(Name="Дежурные")]
+        public virtual List<ApplicationUser> ApplicationUsers { get; set; }
 
+        [Display(Name = "Записи")]
         public virtual ICollection<RecordVigil> RecordVigils { get; set; }
     }
 }

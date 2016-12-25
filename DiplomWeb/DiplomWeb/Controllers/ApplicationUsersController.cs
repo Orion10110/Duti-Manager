@@ -16,7 +16,7 @@ namespace DiplomWeb.Controllers
     public class ApplicationUsersController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-            private ApplicationRoleManager _roleManager;
+        private ApplicationRoleManager _roleManager;
         private ApplicationUserManager _userManager;
         public ApplicationUserManager UserManager
         {
@@ -85,7 +85,7 @@ namespace DiplomWeb.Controllers
             if (ModelState.IsValid)
             {
 
-                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, PhoneNumber = model.Number,DateBirth = model.DateBirth};
+                var user = new ApplicationUser {Patronymic=model.Patronymic, UserName = model.UserName, Email = model.Email, PhoneNumber = model.Number,DateBirth = model.DateBirth,CountHolidayDays=model.CountHolidayDays,FirstName=model.FirstName,SecondName=model.SecondName};
                 var result = await UserManager.CreateAsync(user, model.Password);
 
 
@@ -143,7 +143,8 @@ namespace DiplomWeb.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             ApplicationUser applicationUser = db.Users.Find(id);
-            var model = new ChangedViewModel {Id=applicationUser.Id, UserName = applicationUser.UserName, Email = applicationUser.Email, Number = applicationUser.PhoneNumber};
+            var model = new ChangedViewModel {Patronymic=applicationUser.Patronymic, Id=applicationUser.Id, UserName = applicationUser.UserName, Email = applicationUser.Email, Number = applicationUser.PhoneNumber,SecondName =applicationUser.SecondName,
+            CountHolidayDays=applicationUser.CountHolidayDays,FirstName =applicationUser.FirstName, DateBirth=applicationUser.DateBirth,EmailNotifications=applicationUser.EmailNotifications};
             if (applicationUser == null)
             {
                 return HttpNotFound();
@@ -168,6 +169,14 @@ namespace DiplomWeb.Controllers
                 }      
                 appUser.PhoneNumber = model.Number;
                 appUser.Email = model.Email;
+                appUser.UserName = model.UserName;
+                appUser.Email = model.Email;
+                appUser.CountHolidayDays = model.CountHolidayDays;
+                appUser.DateBirth = model.DateBirth;
+                appUser.EmailNotifications = model.EmailNotifications;
+                appUser.FirstName = model.FirstName;
+                appUser.SecondName = model.SecondName;
+                appUser.Patronymic = model.Patronymic;
                 db.Entry(appUser).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -199,6 +208,12 @@ namespace DiplomWeb.Controllers
             db.Users.Remove(applicationUser);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public ActionResult WriteUser()
+        {
+            List<ApplicationUser> appUsers = db.Users.ToList();
+            return PartialView(appUsers);
         }
 
         protected override void Dispose(bool disposing)

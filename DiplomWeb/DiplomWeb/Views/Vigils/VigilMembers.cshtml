@@ -1,0 +1,12 @@
+﻿@model IEnumerable<DiplomWeb.Models.ApplicationUser>
+<div class="panel panel-default">
+    <div class="panel-heading">Участники</div>
+    <div class="panel-body">
+
+            @foreach (var user in Model)
+            {
+                <a href="">@String.Format("{0} {1}", user.SecondName, user.FirstName)</a>
+            }
+
+    </div>
+</div>

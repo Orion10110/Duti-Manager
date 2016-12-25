@@ -8,7 +8,7 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>ApplicationUser</h4>
         <hr />
@@ -16,34 +16,61 @@
         @Html.HiddenFor(model => model.Id)
 
 
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SecondName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SecondName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CountHolidayDays, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Patronymic, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Patronymic, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+            </div>
+        </div>
         <div class="form-group">
             @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
                 @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
             @Html.LabelFor(m => m.Number, new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
                 @Html.TextBoxFor(m => m.Number, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Number, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.Age, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.DateBirth, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Age, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Age, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.DateBirth, new { htmlAttributes = new { @class = "form-control", value=Model.DateBirth } })
+                @Html.ValidationMessageFor(model => model.DateBirth, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CountHolidayDays, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CountHolidayDays, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CountHolidayDays, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
             @Html.LabelFor(m => m.UserName, new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
                 @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
             </div>
         </div>
+       
         <div class="form-group">
             @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
@@ -56,7 +83,6 @@
                 @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
             </div>
         </div>
-
 
 
 

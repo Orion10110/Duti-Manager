@@ -32,10 +32,10 @@ namespace DiplomWeb.Controllers
             {
                 string id = User.Identity.GetUserId();
                 ApplicationUser user =db.Users.Find(id);
-                List<Vigil> vig = user.VigilGroups.SelectMany(s => s.Vigils).ToList();
+                List<Vigil> vig = user.Vigils.ToList();
                 //IEnumerable<String> list = UserManager.GetRoles(id);
                 //List<Vigil> vig = db.ApplicationRole.Where(p => list.Contains(p.Name)).SelectMany(s => s.Vigils).ToList();
-               
+
                 //var user = db.Users.Find(id);
                 List<ProjectInfo> projects = user.Groups.Select(t => new ProjectInfo
                 { Id = t.Project.Id, Name = t.Project.Name }).ToList();
@@ -55,15 +55,12 @@ namespace DiplomWeb.Controllers
                 ViewBag.Vigil = vig;
                 ViewBag.Projects = projects;
             }
-          
+            ViewBag.Users = db.Users.ToList();     
             return View();
         }
 
 
-        public ActionResult Java()
-        {
-            return View();
-        }
+     
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

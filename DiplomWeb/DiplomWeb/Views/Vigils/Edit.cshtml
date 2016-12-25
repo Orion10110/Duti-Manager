@@ -25,11 +25,24 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.ApplicationRoleID, "ApplicationRoleID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("ApplicationRoleID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.ApplicationRoleID, "", new { @class = "text-danger" })
-            </div>
+            <h5>Дни недели</h5>
+            @{ 
+                string[] days = Model.Days.Split(',');
+            }
+            @Html.CheckBox("days", days.Contains("1"), new { value = "1", id = "monday" })
+            @Html.Label("monday", "Понедельник", new { @for = "monday" })
+            @Html.CheckBox("days", days.Contains("2"), new { value = "2", id = "tuesday" })
+            @Html.Label("tuesday", "Вторник", new { @for = "tuesday" })
+            @Html.CheckBox("days", days.Contains("3"), new { value = "3", id = "wednesday" })
+            @Html.Label("wednesday", "Среда", new { @for = "wednesday" })
+            @Html.CheckBox("days", days.Contains("4"), new { value = "4", id = "thursday" })
+            @Html.Label("thursday", "Четверг", new { @for = "thursday" })
+            @Html.CheckBox("days", days.Contains("5"), new { value = "5", id = "friday" })
+            @Html.Label("friday", "Пятница", new { @for = "friday" })
+            @Html.CheckBox("days", days.Contains("6"), new { value = "6", id = "saturday" })
+            @Html.Label("saturday", "Субота", new { @for = "saturday" })
+            @Html.CheckBox("days", days.Contains("7"), new { value = "7", id = "sunday" })
+            @Html.Label("sunday", "Воскресение", new { @for = "sunday" })
         </div>
 
         <div class="form-group">

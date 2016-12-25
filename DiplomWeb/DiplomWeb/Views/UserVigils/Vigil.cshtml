@@ -171,11 +171,40 @@
 @section Scripts{
     @Scripts.Render("~/bundles/calendar")
     <script>
-    
+
         var events =@Html.Raw(JsonConvert.SerializeObject(ViewBag.Record));
-  
+
 
         $(function () {
+            var enumerateDaysBetweenDates = function(startDate, endDate) {
+                var dates = [];
+
+                var currDate = startDate.clone().startOf('day');
+                var lastDate = endDate.clone().startOf('day');
+
+                while(currDate.add('days', 1).diff(lastDate) <= 0) {
+                    dates.push(currDate.clone().add('days', -1).toDate());
+                }
+
+                return dates;
+            };
+
+            function SelectedDays(start,end,array){
+                var days = enumerateDaysBetweenDates(start,end);
+                function isPositive(dt) {
+                    var day = moment(dt).day();
+                    if(day==0) day=7;
+                    if(!array.includes(day)) return true;
+                    return false;
+                }
+
+                return  days.some(isPositive);
+            }
+
+
+
+
+            var daysVigil =[@ViewBag.Days];
             var calendar = $('#calendar').fullCalendar({
                 header: {
                     left: 'prev,next today',
@@ -188,8 +217,15 @@
                 selectable: true,
                 selectHelper: true,
                 editable: true,
+                dayRender: function(date, cell){
+                    if(SelectedDays(date,date.clone().add('days',1),daysVigil)){
+                        cell.css("background-color","rgba(255, 27, 27, 0.14)");
+                    }
+                },
                 select: function (start, end) {
 
+
+                    if(SelectedDays(start,end,daysVigil)) return;
 
                     $('#ModalAdd #start').val(moment(start).format('YYYY-MM-DD HH:mm:ss'));
                     $('#ModalAdd #end').val(moment(end).format('YYYY-MM-DD HH:mm:ss'));
@@ -209,12 +245,25 @@
                     });
                 },
                 eventDrop: function (event, delta, revertFunc) { // si changement de position
-
+                    start = event.start;
+                    if (event.end) {
+                        end = event.end;
+                    } else {
+                        end = start;
+                    }
+                    if(SelectedDays(start,end,daysVigil)) {    revertFunc(); return;}
                     edit(event);
 
                 },
                 eventResize: function (event, dayDelta, minuteDelta, revertFunc) { // si changement de longueur
-
+                    
+                    start = event.start;
+                    if (event.end) {
+                        end = event.end;
+                    } else {
+                        end = start;
+                    }
+                    if(SelectedDays(start,end,daysVigil)) {    revertFunc(); return;}
                     edit(event);
 
                 }

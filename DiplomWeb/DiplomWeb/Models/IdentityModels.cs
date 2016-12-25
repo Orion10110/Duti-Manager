@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace DiplomWeb.Models
 {
@@ -20,10 +21,15 @@ namespace DiplomWeb.Models
         public string FirstName { get; set; }
         [Display(Name = "Фамилия")]
         public string SecondName { get; set; }
+        [Display(Name = "Отчество")]
+        public string Patronymic { get; set; }
         [Display(Name = "Оповещение по e-mail")]
         public bool EmailNotifications { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "Дата рождения")]
         public DateTime DateBirth { get; set; }
+        [JsonProperty("CountHolidayDays", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         [DefaultValue("24")]
         [Display(Name = "Количество дней отпуска")]
         public int CountHolidayDays { get; set; }
@@ -38,7 +44,7 @@ namespace DiplomWeb.Models
             this.ForWhomTask = new HashSet<TaskOfProject>();
             this.FromWhomTask = new HashSet<TaskOfProject>();
             this.Holidays = new HashSet<Holiday>();
-            this.VigilGroups = new HashSet<VigilGroups>();
+            this.Vigils = new HashSet<Vigil>();
         }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
@@ -48,7 +54,7 @@ namespace DiplomWeb.Models
             // Здесь добавьте утверждения пользователя
             return userIdentity;
         }
-        public virtual ICollection<VigilGroups> VigilGroups { get; set; }
+        //public virtual ICollection<VigilGroups> VigilGroups { get; set; }
 
         public virtual ICollection<Holiday> Holidays { get; set; }
 
@@ -63,6 +69,7 @@ namespace DiplomWeb.Models
 
         public virtual ICollection<Group> Groups { get; set; }
 
+        public virtual ICollection<Vigil> Vigils { get; set; }
 
     }
 
@@ -81,7 +88,6 @@ namespace DiplomWeb.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<VigilGroups> VigilGroups { get; set; }
 
         public DbSet<Vigil> Vigils { get; set; }
         public DbSet<ApplicationRole> ApplicationRole { get; set; }

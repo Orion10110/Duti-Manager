@@ -1,0 +1,62 @@
+﻿@using DiplomWeb.Models
+
+@{
+    ViewBag.Title = "Members";
+}
+
+<h2>Members</h2>
+
+
+<input type="text" class="form-control" id="filter" />
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <h3>Пользователи</h3>
+        <div class="form-group">
+            @foreach (ApplicationUser item in ViewBag.Users)
+            {
+
+
+                <div class="checkbox">
+                    @Html.CheckBox("users", false, new { value = item.Id.ToString(), id = item.Id.ToString() })
+                    @Html.Label(item.Id, String.Format("{0} {1}", item.SecondName, item.FirstName), new { @for = item.Id })
+
+                </div>
+
+            }
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Добавить" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+
+@section Scripts {
+
+    <script>
+
+        $("#filter").bind("input propertychange", function (e) {
+            $(".filter_name").parents().removeClass("display-none");
+            $(".filter_name").each(function( index ) {
+                var text = $(this).text().toLowerCase();
+                if (!text.includes($("#filter").val().toLowerCase())) {
+                    $(this).parent().addClass("display-none");
+                }
+            });
+
+        });
+
+    </script>
+
+}

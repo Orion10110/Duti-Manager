@@ -11,6 +11,9 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.AspNet.Identity;
 using System.Web.Security;
 using Newtonsoft.Json;
+using System.IO;
+using System.Data.Entity.Core.Objects;
+using Microsoft.Office.Interop.Word;
 
 namespace DiplomWeb.Controllers
 {
@@ -40,22 +43,22 @@ namespace DiplomWeb.Controllers
             ////IEnumerable<Vigil> listVigil = db.Vigils.Include(v => v.ApplicationRole).
 
             string id = User.Identity.GetUserId();
-            IEnumerable<String> list = UserManager.GetRoles(id);
-            db.ApplicationRole.Where(p => list.Contains(p.Name));
-            db.Vigils.Include(v => v.ApplicationRole);
-            List<ApplicationRole> rl = db.ApplicationRole.Where(p => list.Contains(p.Name)).ToList();
-            List<Vigil> vigil = new List<Vigil>();
-            foreach (ApplicationRole ap in rl)
-            {
-                vigil.AddRange(ap.Vigils.ToList());
-            }
-            List<RecordVigil> records = new List<RecordVigil>();
-            foreach (Vigil vg in vigil)
-            {
+         //   IEnumerable<String> list = UserManager.GetRoles(id);
+           // db.ApplicationRole.Where(p => list.Contains(p.Name));
+           // db.Vigils.Include(v => v.ApplicationRole);
+            //List<ApplicationRole> rl = db.ApplicationRole.Where(p => list.Contains(p.Name)).ToList();
+           // List<Vigil> vigil = new List<Vigil>();
+            //foreach (ApplicationRole ap in rl)
+            //{
+            //    vigil.AddRange(ap.Vigils.ToList());
+            //}
+            //List<RecordVigil> records = new List<RecordVigil>();
+            //foreach (Vigil vg in vigil)
+            //{
 
-                records.AddRange(vg.RecordVigils);
-            }
-            ViewBag.VigilId = new SelectList(vigil, "Id", "Name");
+            //    records.AddRange(vg.RecordVigils);
+            //}
+          //  ViewBag.VigilId = new SelectList(vigil, "Id", "Name");
 
             //    original.Any(p => otherPeople.Contains(p));
             return View();
@@ -65,13 +68,11 @@ namespace DiplomWeb.Controllers
         {
 
             string idUser = User.Identity.GetUserId();
-            IEnumerable<String> listRoles = UserManager.GetRoles(idUser);
-            List<Vigil> vig = db.ApplicationRole.Where(p => listRoles.Contains(p.Name)).SelectMany(s => s.Vigils).ToList();
-            ViewBag.Vigil = vig;
-
-
-            Vigil vigil =db.Vigils.Find(id);
             ApplicationUser user = db.Users.Find(idUser);
+        //    IEnumerable<String> listRoles = UserManager.GetRoles(idUser);
+            List<Vigil> vig = user.Vigils.ToList();
+            ViewBag.Vigil = vig;
+            Vigil vigil =db.Vigils.Find(id);
             ViewBag.VigilName = vigil.Name;
             ViewBag.VigilId = vigil.Id;
             ViewBag.UserName = user.SecondName + " " + user.FirstName;
@@ -89,11 +90,110 @@ namespace DiplomWeb.Controllers
             }
           
             ViewBag.Record = record;
-           
+            ViewBag.Days = vigil.Days;
             ViewBag.VigilName = vigil.Name;
             return View();
         }
+        [HttpPost]
+        public FileContentResult DownloadFile([Bind(Include = "Id,TitleOne,Text,DateStart,DataEnd")] DateSelect dateSelect)
+        {
+            Vigil vig = db.Vigils.Find(dateSelect.Id);
+            List<RecordVigil> rvig = vig.RecordVigils.Where(s => s.StartAt >= dateSelect.DateStart && s.StartAt <= dateSelect.DateEnd).ToList();
+            object objMissing = System.Reflection.Missing.Value;
+            object objEndofDocument = "\\endofdoc";
+            Microsoft.Office.Interop.Word.Application appobj;
+            Microsoft.Office.Interop.Word.Document docobj;
+            appobj = new Microsoft.Office.Interop.Word.Application();
+            appobj.Visible = false;
+            docobj = appobj.Documents.Add(ref objMissing, ref objMissing, ref objMissing, ref objMissing);
 
+
+
+
+
+
+
+
+            //adding text to document
+            docobj.Content.SetRange(0, 0);
+           
+            //Add paragraph with Heading 1 style
+            Microsoft.Office.Interop.Word.Paragraph para1 = docobj.Content.Paragraphs.Add(ref objMissing);
+            para1.Range.Bold = 1;
+            para1.Range.Text = dateSelect.TitleOne;
+
+            para1.Range.Font.Name = "Times New Roman";
+            para1.Range.Font.Size = 14;
+            para1.Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+            para1.Range.InsertParagraphAfter();
+
+            //Add paragraph with Heading 2 style
+            Microsoft.Office.Interop.Word.Paragraph para2 = docobj.Content.Paragraphs.Add(ref objMissing);
+            para2.Range.Bold = 1;
+            para2.Range.Text = dateSelect.Text;
+
+            para2.Range.Font.Name = "Times New Roman";
+            para2.Range.Font.Size = 14;
+            para2.Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphJustify;
+            para2.Range.InsertParagraphAfter();
+
+            
+
+
+
+
+
+
+
+
+            Microsoft.Office.Interop.Word.Table tableObj;
+            Microsoft.Office.Interop.Word.Range RangeWord = docobj.Bookmarks.get_Item(ref objEndofDocument).Range;
+            tableObj = docobj.Tables.Add(RangeWord, rvig.Count+1, 2, ref objMissing, ref objMissing);
+            tableObj.Range.ParagraphFormat.SpaceAfter = 8;
+            tableObj.Borders.Enable = 1;
+            SetTextTable(tableObj.Cell(1, 1),"ФИО",WdParagraphAlignment.wdAlignParagraphCenter);
+            SetTextTable(tableObj.Cell(1, 2), "Дата",WdParagraphAlignment.wdAlignParagraphCenter);
+            int i = 2;
+            foreach (RecordVigil record in rvig)
+            {
+                String name = String.Format("{0} {1} {2}", record.ApplicationUser.SecondName, record.ApplicationUser.FirstName, record.ApplicationUser.Patronymic);
+                SetTextTable(tableObj.Cell(i, 1),
+                   name,
+                    WdParagraphAlignment.wdAlignParagraphJustify);
+                SetTextTable(tableObj.Cell(i, 2), record.StartAt.ToString("d"),
+                    WdParagraphAlignment.wdAlignParagraphJustify);
+                i++;
+            }
+               
+            docobj.SaveAs(Server.MapPath(@"~/Files/doc2.doc"));
+            docobj.Close(ref objMissing, ref objMissing, ref objMissing);
+            docobj = null;
+            byte[] fileContents = System.IO.File.ReadAllBytes(Server.MapPath(@"~/Files/doc2.doc"));
+
+            string fullPath = Request.MapPath(@"~/Files/doc2.doc");
+            if (System.IO.File.Exists(fullPath))
+            {
+                System.IO.File.Delete(fullPath);
+            }
+            return File(fileContents, "application/msword",dateSelect.Text+".doc");
+        }
+
+
+
+        public ActionResult FormDateDownload()
+        {
+            
+            return PartialView();
+        }
+
+
+        private void SetTextTable(Cell cell, string text,WdParagraphAlignment aligment)
+        {
+            cell.Range.Text = text;
+            cell.Range.Font.Name = "Times New Roman";
+            cell.Range.Font.Size = 14;
+            cell.Range.ParagraphFormat.Alignment = aligment;
+        }
 
         public ActionResult Sheduler(int id)
         {
@@ -121,7 +221,8 @@ namespace DiplomWeb.Controllers
             List<RecordVigil> rv = vigil.RecordVigils.ToList();
             List<object> events = new List<object>();
             List<object> listUser = new List<object>();
-            List<ApplicationUser> users = db.Users.Where(u => u.Roles.Any(r => r.RoleId == vigil.ApplicationRoleID)).ToList();
+            //List<ApplicationUser> users = vigil.VigilGroups.SelectMany(s => s.ApplicationUsers).ToList();
+            List<ApplicationUser> users = vigil.ApplicationUsers.ToList();
             foreach (ApplicationUser item in users)
             {
                 listUser.Add(new { name=item.SecondName+" "+item.FirstName, id=item.Id });
@@ -258,27 +359,33 @@ namespace DiplomWeb.Controllers
         }
 
         // UserVigils/GetEvents
-        public JsonResult GetEvents()
+        
+        public JsonResult GetEvents(int id)
         {
-            var v = db.RecordVigils.OrderBy(a => a.StartAt).ToList();
-            string id = User.Identity.GetUserId();
-            IEnumerable<String> list = UserManager.GetRoles(id);
-            List<ApplicationRole> rl = db.ApplicationRole.Where(p => list.Contains(p.Name)).ToList();
-            List<Vigil> vigil = new List<Vigil>();
-            foreach (ApplicationRole ap in rl)
-            {
-                vigil.AddRange(ap.Vigils.ToList());
-            }
-            List<RecordVigil> records = new List<RecordVigil>();
-            foreach (Vigil vg in vigil)
-            {
-                records.AddRange(vg.RecordVigils);
-            }
+            //  var v = db.RecordVigils.OrderBy(a => a.StartAt).ToList();
+            List<RecordVigil> records = db.Vigils.Find(id).RecordVigils.ToList();
+
+            string userId = User.Identity.GetUserId();
+       //     ApplicationUser user = db.Users.Find(id);
+         //   IEnumerable<String> list = UserManager.GetRoles(id);
+           // List<ApplicationRole> rl = db.ApplicationRole.Where(p => list.Contains(p.Name)).ToList();
+            //List<Vigil> vigil = new List<Vigil>();
+            //foreach (ApplicationRole ap in rl)
+           //{
+             //   vigil.AddRange(ap.Vigils.ToList());
+            //}
+            //List<RecordVigil> records = new List<RecordVigil>();
+            //foreach (Vigil vg in vigil)
+            //{
+            //    records.AddRange(vg.RecordVigils);
+            //}
+            //List<Vigil> list = 
+
             List<RecordVigil> vlo = new List<RecordVigil>();
             foreach (RecordVigil item in records)
             {
                 bool editable = false;
-                if (item.ApplicationUserID == id)
+                if (item.ApplicationUserID == userId)
                 {
                     editable = true;
                 }
