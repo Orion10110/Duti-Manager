@@ -1,73 +1,53 @@
 ﻿@model DiplomWeb.Models.TaskOfProject
 @using DiplomWeb.Models
-@using (Html.BeginForm("Create", "TaskOfProjects", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data",id="CreateTask" }))
+@using (Html.BeginForm("Create", "TaskOfProjects", FormMethod.Post, new { @class = "", role = "form", enctype = "multipart/form-data",id="CreateTask" }))
 {
     @Html.AntiForgeryToken()
     
-    <div class="form-horizontal">
-        <h4>Добавить задачу</h4>
-        <hr />
+    <div class="col-md-6 form-contrl" style="">
+      
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-       
-        <div class="form-group">
-            @Html.LabelFor(model => model.ForWhomId, "ForWhomId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("ForWhomId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.ForWhomId, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        @Html.Hidden("ProjectId", (object)ViewBag.IdProject.ToString())
 
-    
-
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label" })
                 @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-                    @Html.Hidden("ProjectId", (object)ViewBag.IdProject.ToString())
-            </div>
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" }) 
+        </div>
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.DateStart, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.DateStart, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.DateStart, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.DataFinal, htmlAttributes: new { @class = "control-label " })
+            @Html.EditorFor(model => model.DataFinal, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.DataFinal, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.ForWhom, htmlAttributes: new { @class = "control-label" })
+            @Html.DropDownList("ForWhomId", null, htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.ForWhomId, "", new { @class = "text-danger" })
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.DateStart, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.DateStart, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.DateStart, "", new { @class = "text-danger" })
-            </div>
+        <div class="form-group col-md-11">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+            <div> @Html.TextAreaFor(model => model.Description, new { @class = "form-control col-md-12" })</div>
+            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
         </div>
+       
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.DataFinal, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.DataFinal, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.DataFinal, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        <div class="row">
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EnumDropDownListFor(model => model.Priority, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Priority, "", new { @class = "text-danger" })
-            </div>
+            @*<div class="form-group col-lg-12">
+                <div>
+                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label " })
+                    @Html.TextAreaFor(model => model.Description, htmlAttributes: new { @class = "form-control", id = "tiny" })
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
         </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.TaskStatus, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EnumDropDownListFor(model => model.TaskStatus, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.TaskStatus, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2 " })
-            <div class="col-md-10">
-                @Html.TextAreaFor(model => model.Description, htmlAttributes: new { @class = "form-control", id= "tiny" })
-                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-            </div>
-        </div>
-        @foreach (ApplicationUser item in ViewBag.Watchers)
+        @*@foreach (ApplicationUser item in ViewBag.Watchers)
         {
 
 
@@ -77,7 +57,7 @@
 
             </div>
 
-        }
+        }*@
         <div class="form-group">
             <div style="position:relative;">
                 <label>Файлы</label>
@@ -97,9 +77,51 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input  type="submit" value="Create" class="btn btn-default" />
+                <input  type="submit" value="Создать" class="btn btn-default" />
             </div>
         </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+          
+            <div class="form-group  col-lg-6">
+                @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label" })
+                @Html.EnumDropDownListFor(model => model.Priority, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Priority, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group  col-lg-6">
+                @Html.LabelFor(model => model.TaskStatus, htmlAttributes: new { @class = "control-label" })
+                @Html.EnumDropDownListFor(model => model.TaskStatus, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.TaskStatus, "", new { @class = "text-danger" })
+            </div>
+            
+        </div>
+        <div class="row">
+            <div class="panel-body style-scroll" style="height:350px; overflow:auto;">
+                <h5 class="head-group">@Html.DisplayNameFor(m => m.Watchers):</h5>
+                @foreach (DiplomWeb.Models.ApplicationUser user in ViewBag.Watchers)
+                {
+                    <label style="display:block">
+                        <div class="users-project">
+
+                            <div class="image-cut pull-left">
+                                <img width="75"
+                                     src="@Url.Action("GetImage", "ApplicationUsers",new { user.Id })" />
+                            </div>
+
+                            <span class="text-img"> @String.Format("{0} {1}", user.SecondName, user.FirstName)</span>
+                            <span class="clearfix"></span>
+
+                        </div>
+                        @Html.CheckBox("users", false, new { value = user.Id.ToString(), id = user.Id.ToString(), @class = "hidden" })
+                    </label>
+                }
+
+
+            </div>
+
+        </div>
+
     </div>
 }
 
@@ -107,8 +129,10 @@
     $("#fileUploader").change(function () {
         var files = $(this)[0].files;
         for (var i = 0; i < files.length; i++) {
-            $("#upload-file-info").append("<span class='label label-info' style='margin-left:10px' >" + files[i].name + "</span>");
+            $("#upload-file-info").append("<span class='label label-info' style='margin-left:10px; display: inline-block;' >" + files[i].name + "</span>");
         }
     });
-
+    $(".users-project").click(function () {
+        $(this).toggleClass("check-user");
+        });
 </script>

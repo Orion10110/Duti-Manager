@@ -1,27 +1,41 @@
 ﻿@using Newtonsoft.Json;
-@{
-    ViewBag.Title = "Дежуоство по @ViewBag.VigilName";
-}
-@section Styles{
-    @Styles.Render("~/Content/calendar")
-}
-<h2>Дежуоство: @ViewBag.VigilName</h2>
 
-<div class="row">
+
+<div class="row view-project">
     <div class="col-md-8">
         <div id="calendar"></div>
     </div>
-    <div class="col-md-4">
-        <h4>Дежурства</h4>
-        <ul>
-            @foreach (DiplomWeb.Models.Vigil item in ViewBag.Vigil)
+    <div class="col-md-3 col-md-offset-1">
+        <h5 class="head-group">Дежурные</h5>
+        <div class="style-scroll" style="height:350px; overflow:auto;">
+            @foreach (var user in ViewBag.Users)
             {
 
-                <li>@Html.ActionLink(item.Name, "Vigil", "UserVigils", new { id = item.Id }, null) </li>
+                <div class="users-project">
+                    <a href="@Url.Action("UserInfo", "ApplicationUsers",new { user.Id })">
+                        <div class="image-cut pull-left">
+                            <img width="75"
+                                 src="@Url.Action("GetImage", "ApplicationUsers",new { user.Id })" />
+                        </div>
+
+                        <span class="text-img"> @String.Format("{0} {1}", user.SecondName, user.FirstName)</span>
+                        <span class="clearfix"></span>
+                    </a>
+                </div>
             }
-        </ul>
-    </div>
-    @Html.ActionLink("Сводный график", "Sheduler","UserVigils",new { id = ViewBag.VigilId},null)
+        </div>
+
+                <h5 class="head-group">Дежурства</h5>
+                <ul>
+                    @foreach (DiplomWeb.Models.Vigil item in ViewBag.Vigil)
+                    {
+
+                        <li class="btn-stl">@Html.ActionLink(item.Name, "Index", "UserVigils", new { id = item.Id }, null) </li>
+                    }
+                </ul>
+                @Html.ActionLink("Сводный график", "Sheduler", "UserVigils", new { id = ViewBag.VigilId }, null)
+            </div>
+
 
 </div>
 
@@ -168,7 +182,7 @@
 </div>
 
 
-@section Scripts{
+
     @Scripts.Render("~/bundles/calendar")
     <script>
 
@@ -421,4 +435,3 @@
 
     </script>
     
-}

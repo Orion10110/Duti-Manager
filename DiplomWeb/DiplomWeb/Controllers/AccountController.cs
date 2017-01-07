@@ -61,6 +61,14 @@ namespace DiplomWeb.Controllers
             return View();
         }
 
+
+        [AllowAnonymous]
+        public ActionResult PartialLogin(string returnUrl)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            return PartialView("Login");
+        }
+
         //
         // POST: /Account/Login
         [HttpPost]
@@ -79,15 +87,18 @@ namespace DiplomWeb.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    return Json(new { status = "success" }, JsonRequestBehavior.DenyGet);
+                    //return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                    return Json(new { status = "requires_verification" }, JsonRequestBehavior.DenyGet);
+                //return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Неудачная попытка входа.");
-                    return View(model);
+                    return Json(new { status = "failure" }, JsonRequestBehavior.DenyGet);
+                    //ModelState.AddModelError("", "Неудачная попытка входа.");
+                    //return View(model);
             }
         }
 
@@ -151,22 +162,24 @@ namespace DiplomWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                string prefix = Guid.NewGuid().ToString();
-                string fileName = "";
-                if (upload != null)
-                {
-                    // получаем имя файла
-                    fileName = System.IO.Path.GetFileName(upload.FileName);
-                    // сохраняем файл в папку Files в проекте
-                    
-                }
+              
+
 
                 var user = new ApplicationUser {PhoneNumber=model.Number, UserName = model.UserName, Email = model.Email, DateBirth=model.DateBirth,EmailNotifications=model.EmailNotifications, Patronymic=model.Patronymic,
-                FirstName=model.FirstName,SecondName=model.SecondName,ImageAvatar= prefix.ToString()+fileName};
+                FirstName=model.FirstName,SecondName=model.SecondName};
+                if (upload != null)
+                {
+                    user.ImageMimeType = upload.ContentType;
+                    user.ImageData = new byte[upload.ContentLength];
+                    upload.InputStream.Read(user.ImageData, 0, upload.ContentLength);
+                }
+
                 var result = await UserManager.CreateAsync(user, model.Password);
+             
+
                 if (result.Succeeded)
                 {
-                    upload.SaveAs(Server.MapPath("~/Content/UserPhoto/" + fileName));
+     
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // Дополнительные сведения о том, как включить подтверждение учетной записи и сброс пароля, см. по адресу: http://go.microsoft.com/fwlink/?LinkID=320771
@@ -184,9 +197,11 @@ namespace DiplomWeb.Controllers
             return View(model);
         }
 
-        //
-        // GET: /Account/ConfirmEmail
-        [AllowAnonymous]
+
+
+    //
+    // GET: /Account/ConfirmEmail
+    [AllowAnonymous]
         public async Task<ActionResult> ConfirmEmail(string userId, string code)
         {
             if (userId == null || code == null)

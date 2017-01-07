@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using DiplomWeb.Models;
+using Twilio;
 
 namespace DiplomWeb
 {
@@ -28,6 +29,14 @@ namespace DiplomWeb
     {
         public Task SendAsync(IdentityMessage message)
         {
+            string AccountSid = "AC5ee2ad646525ef76d596811c23b3dc61";
+
+            string AuthToken = "9a339aa9f85fa80c29d9e21a890ea767";
+
+            string twilioPhoneNumber = "+12566175705";
+
+            var twilio = new TwilioRestClient(AccountSid, AuthToken);
+            twilio.SendMessage(twilioPhoneNumber, message.Destination, message.Body);
             // Подключите здесь службу SMS, чтобы отправить текстовое сообщение.
             return Task.FromResult(0);
         }

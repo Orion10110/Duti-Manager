@@ -1,40 +1,50 @@
 ﻿@model IEnumerable<DiplomWeb.Models.TaskOfProject>
 
-<h2>Задача</h2>
+<div class="table-my">
 
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.TaskStatus)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Priority)
-        </th>
-        <th>
+    <div class="row-table header-table dark-table">
+        <div class="cell-table">
             @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
+        </div>
+        <div class="cell-table">
+            @Html.DisplayNameFor(model => model.Priority)
+        </div>
+        <div class="cell-table">
+            @Html.DisplayNameFor(model => model.FromWhom)
+        </div>
+        <div class="cell-table">
             @Html.DisplayNameFor(model => model.ForWhom)
-        </th>
-        <th></th>
-    </tr>
+        </div>
+        <div class="cell-table">
+            @Html.DisplayNameFor(model => model.TaskStatus)
+        </div>
+    </div>
 
-    @foreach (var item in Model)
+    @foreach (DiplomWeb.Models.TaskOfProject item in Model.Where(s=>s.TaskStatus!= DiplomWeb.Models.TaskStatus.закрытая))
     {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TaskStatus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Priority)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ForWhom.SecondName)
-            </td>
+        <div class="row-table clickable-row" data-href='@Url.Action("Index","TaskOfProjects",new { id=item.Id})'>
+            <div class="cell-table">
+                @item.Name
+            </div>
+            <div class="cell-table">
+                @item.Priority
+            </div>
+            <div class="cell-table">
+                @item.FromWhom.SecondName @item.FromWhom.FirstName
+            </div>
+            <div class="cell-table">
+                @item.ForWhom.SecondName @item.ForWhom.FirstName
+            </div>
+            <div class="cell-table">
+                @item.TaskStatus.ToString().Replace('_', ' ')
+            </div>
+        </div>
 
-        </tr>
     }
-</table>
+</div>
+<script>
+      $(".clickable-row").click(function () {
+                window.document.location = $(this).data("href");
+            });
+</script>
+</script>

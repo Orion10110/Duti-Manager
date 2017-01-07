@@ -7,24 +7,49 @@
 <h2>Members</h2>
 
 
-<input type="text" class="form-control" id="filter" />
-@using (Html.BeginForm())
+<input type="text" class="form-control full-width" id="filter" />
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "CreateTask" }))
 {
     @Html.AntiForgeryToken()
     <div class="form-horizontal">
-        <h3>Пользователи</h3>
+        @*<h3>Пользователи</h3>
         <div class="form-group">
             @foreach (ApplicationUser item in ViewBag.Users)
             {
 
 
                 <div class="checkbox">
-                    @Html.CheckBox("users", false, new { value = item.Id.ToString(), id = item.Id.ToString() })
-                    @Html.Label(item.Id, String.Format("{0} {1}", item.SecondName, item.FirstName), new { @for = item.Id })
+                    @Html.CheckBox("users", false, new { value = item.Id.ToString(), id = item.Id.ToString()})
+                    @Html.Label(item.Id, String.Format("{0} {1}", item.SecondName, item.FirstName), new { @for = item.Id,@class= "filter_name"  })
 
                 </div>
 
             }
+        </div>*@
+        <div class="row">
+            <div class="panel-body style-scroll" style="height:350px; overflow:auto;">
+                <h5 class="head-group">Пользователи:</h5>
+                @foreach (ApplicationUser user in ViewBag.Users)
+                {
+                    <label style="display:block">
+                        <div class="users-project">
+
+                            <div class="image-cut pull-left">
+                                <img width="75"
+                                     src="@Url.Action("GetImage", "ApplicationUsers",new { user.Id })" />
+                            </div>
+
+                            <span class="text-img filter_name"> @String.Format("{0} {1}", user.SecondName, user.FirstName)</span>
+                            <span class="clearfix"></span>
+
+                        </div>
+                        @Html.CheckBox("users", false, new { value = user.Id.ToString(), id = user.Id.ToString(), @class = "hidden" })
+                    </label>
+                }
+
+
+            </div>
+
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
@@ -47,16 +72,18 @@
     <script>
 
         $("#filter").bind("input propertychange", function (e) {
-            $(".filter_name").parents().removeClass("display-none");
+            $(".filter_name").parents().parents().parents().removeClass("display-none");
             $(".filter_name").each(function( index ) {
                 var text = $(this).text().toLowerCase();
                 if (!text.includes($("#filter").val().toLowerCase())) {
-                    $(this).parent().addClass("display-none");
+                    $(this).parent().parents().parents().addClass("display-none");
                 }
             });
 
         });
-
+        $(".users-project").click(function () {
+            $(this).toggleClass("check-user");
+        });
     </script>
 
 }

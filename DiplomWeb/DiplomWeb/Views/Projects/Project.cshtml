@@ -4,14 +4,15 @@
 }
 @section Styles{
     @Styles.Render("~/Content/tabs")
+  <link href="/Content/fix-project.css" rel="stylesheet"> 
 }
 
 <ul class="tab">
-    <li><a id="overwiew" href='@Url.Action("Overview",new { id =Model.Id})' class="tablinks" >Обзор</a></li>
+    <li><a id="overwiew" href='@Url.Action("Overview",new { id =Model.Id})' class="tablinks active-link" >Обзор</a></li>
     <li><a href='@Url.Action("Tasks","TaskOfProjects",new { id =Model.Id})' class="tablinks" >Задачи</a></li>
     <li><a href='@Url.Action("Create","TaskOfProjects",new { id =Model.Id})' class="tablinks" >Новая задача</a></li>
    @if(ViewBag.Admin){
-    <li><a href='@Url.Action("EditeV","Projects",new { id =Model.Id})' class="tablinks">Редактировать</a></li>
+    <li><a href='@Url.Action("Edit","Projects",new { id =Model.Id})' class="tablinks">Редактировать</a></li>
     <li><a href='@Url.Action("Members","Projects",new { id =Model.Id})' class="tablinks">Участники</a></li>
     }
    
@@ -20,9 +21,9 @@
 
     <div class="row">
         <div id="message"></div>
-        <h2>@Model.Name</h2>
+        <h2 class="project-name">@Model.Name</h2>
          
-        <div id="view">
+        <div id="view" class="view-project">
 
         </div>
        
@@ -66,13 +67,26 @@
 @Scripts.Render("~/bundles/tinymce")
 @Scripts.Render("~/bundles/scripts")
     <script>
+        function LoadAnimation() {
+            var load = document.createElement('div');
+            load.className = "cssload-container";
+            var div = document.createElement('div');
+            div.className = "cssload-whirlpool";
+            load.appendChild(div);
+            return load;
+        }
+
 
         $(document).ready(function () {
-         
+
+            
+            
+            $('#view').empty().append(LoadAnimation());
             $.ajax({
+              
                 url: '@Url.Action("Overview",new { id =Model.Id})',
                 success: function (html) {
-                    $('#view').append(html);
+                    $('#view').empty().append(html);
 
                 }
             });
@@ -82,16 +96,21 @@
         $("#view").on("submit", function (event) {
             event.preventDefault();
             var url = $('#view #CreateTask')[0].action;
-            var data = $('#view #CreateTask').serialize();
+            var data = $('#view #CreateTask')[0];
+            data = new FormData(data);
             $.ajax({
                 url: url,
                 type: "POST",
+                dataType:"json",
                 data: data,
-                dataType: "json",
+                contentType: false,
+                cache: false,
+                processData: false,
                 success: function (html) {
                     $("#overwiew").click();
-                    $('#message').empty().prepend('<div class="alert alert-success">' + html.message + '</div>').show();
-                    setTimeout(function (e) { $('#message').hide(1000).empty(); }, 4000);
+                    //$('#message').empty().prepend('<div class="alert alert-success">' + html.message + '</div>').show();
+                    //setTimeout(function (e) { $('#message').hide(1000).empty(); }, 4000);
+                    $.jGrowl(html.message, { life: 5000, theme: 'result-growl'});
                 }
             });
         });
@@ -102,6 +121,9 @@
 
         $(".tablinks").click(function (e) {
             e.preventDefault();
+            $(".tablinks").removeClass("active-link");
+            $(this).addClass("active-link");
+            $('#view').empty().append(LoadAnimation());
             var url = $(this).attr("href");
             $.ajax({
                 url: url,

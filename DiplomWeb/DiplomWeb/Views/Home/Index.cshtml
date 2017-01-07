@@ -1,13 +1,66 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "УО \"ГГКТТД\": Домашняя | УО \"Гродненский государственный колледж техники, технологий и дизайна\"";
+
+    if (Request.IsAuthenticated)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutLoging.cshtml";
+    }
+
+}
+@section Styles{
+    @*@Styles.Render("~/Content/chartist")*@
+  <link href="~/Content/fix-project.css" rel="stylesheet" />
+    @if (!Request.IsAuthenticated)
+    {
+<link href="~/Content/fix-project2.css" rel="stylesheet" />}
+<link href="~/Content/loginform.css" rel="stylesheet" />
 }
 
-<div class="jumbotron">
+@*<div class="home-logo">
+    <img class="home-logo-image" src="~/Files/Images/ggkttd.png"/>
+    <h2 class="home-logo-text">Учреждение образования "Гродненский государственный колледж техники, технологий и дизайна</h2>
+</div>
+<h2 class="project-name">Административный элемент управления</h2>*@
+
+@*<div class="jumbotron">
     <h1>Организационный инструмент управления</h1>
 
-</div>
+</div>*@
+@*<div style="font-size: 20px;
+    font-weight: 600;" class="row"><div class="col-xs-6 ct-chart ct-perfect-fourth"></div>
+<div class="col-xs-6 ct-chart ct-golden-section" id="chart2"></div>
+    <div class="col-xs-6 ct-chart ct-golden-section" id="chart3"></div></div>*@
 
 <div class="row">
+
+    @if (ViewBag.Admin)
+    {
+        <div>
+            @Html.ActionLink("Управление Дежурствами", "Index", "Vigils");
+            @Html.ActionLink("Управление Проектами", "Index", "Projects");
+            @Html.ActionLink("Управление Отпусками", "List", "Holidays");
+            @Html.ActionLink("Управление Пользователями", "Index", "ApplicationUsers");
+        </div>
+    }
+    @if (!Request.IsAuthenticated)
+    {
+        <div class="container-main">
+            <div class="container_log">
+                <div style="opacity:0" class="img_log"></div>
+            </div>
+        </div>
+
+
+        <div class="row">
+
+            @Html.Partial("~/Views/Account/LoginPart.cshtml")
+        </div>
+
+    }
     @if (Request.IsAuthenticated)
     {
         <div class="col-md-6">
@@ -26,7 +79,7 @@
                 @foreach (DiplomWeb.Models.Vigil item in ViewBag.Vigil)
                 {
 
-                    <li>@Html.ActionLink(item.Name, "Vigil","UserVigils", new { id = item.Id },null) </li>
+                    <li>@Html.ActionLink(item.Name, "Vigil", "UserVigils", new { id = item.Id }, null) </li>
                 }
             </ul>
         </div>
@@ -37,8 +90,91 @@
     List<DiplomWeb.Models.ApplicationUser> users = ViewBag.Users;
 }
 @*<div class="row">@Html.ActionLink("Button 1", "DownloadFile", "UserVigils")</div>*@
-<div class="row">@Html.Partial("~/Views/UserVigils/View.cshtml", new DiplomWeb.Models.DateSelect() { Id=3, DateStart=DateTime.Now, DateEnd=DateTime.Now})</div>
+@*<div class="row">@Html.Partial("~/Views/UserVigils/View.cshtml", new DiplomWeb.Models.DateSelect() { Id=3, DateStart=DateTime.Now, DateEnd=DateTime.Now})</div>*@
 
+@section Scripts{
+  @if (!Request.IsAuthenticated)
+  {
+      <script>
+  
+        $(document).ready(function() {
+        var a = new Image();
+        a.onload = function() {
+        $(".img_log").animate({ opacity: "1" }, 1500);
+        };
+        var image = $(".img_log").css("background-image").replace('url("', '').replace('")', '');
+        a.src = image;
+          
 
+         
+        $('.form-control').keypress(function() {
+            $('.log-status').removeClass('wrong-entry');
+               });
+
+            $("#login-form").submit(function () {
+                event.preventDefault();
+               var url = $(this)[0].action;
+               var data = $(this).serialize();
+                $.ajax({
+               url: url,
+                    type: "POST",
+                    data: data,
+                    success: function(data) {
+
+                       switch (data.status) {
+                           case "success":
+                               $(".slide-left").removeClass("slide-left").addClass("slide-to-right");
+                               window.location.href = "/";
+                               break;
+                           case "failure":
+                           default:
+                                $('.log-status').addClass('wrong-entry');
+                                $('.alert-form').fadeIn(500);
+                               setTimeout("$('.alert-form').fadeOut(1500);", 3000);
+                       }
+                   }
+               });
+
+               });
+
+        });
+       
+       
+</script>}
+  }
 
 @*<div class="row">@Html.Partial("~/Views/ApplicationUsers/WriteUser.cshtml",users)</div>*@
+
+@*@section Scripts {
+@Scripts.Render("~/scripts/chartist.min.js")
+<script>
+    var data = {
+        // A labels array that can contain any sort of values
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+        // Our series array that contains series objects or in this case series data arrays
+        series: [
+          [5, 2, 4, 2, 0]
+        ]
+    };
+
+    // Create a new line chart object where as first parameter we pass in a selector
+    // that is resolving to our chart container element. The Second parameter
+    // is the actual data object.
+    new Chartist.Line('.ct-chart', data);
+    new Chartist.Bar('#chart2', {
+        labels: [1, 2, 3, 4],
+        series: [[5, 2, 8, 3]]
+    });
+    var data2 = {
+        series: [5, 3]
+    };
+
+    var sum = function (a, b) { return a + b };
+
+    new Chartist.Pie('#chart3', data2, {
+        labelInterpolationFnc: function (value) {
+            return Math.round(value / data2.series.reduce(sum) * 100) + '%';
+        }
+    });
+</script>
+}*@

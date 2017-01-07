@@ -77,12 +77,14 @@ namespace DiplomWeb.Controllers
                 PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
                 TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
                 Logins = await UserManager.GetLoginsAsync(userId),
-                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
+                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId),
+                ImageData = user.ImageData
+                
             };
             return View(model);
         }
 
-
+        
         public ActionResult Edit()
         {
 
@@ -90,7 +92,7 @@ namespace DiplomWeb.Controllers
             ApplicationUser applicationUser = db.Users.Find(User.Identity.GetUserId());
             var model = new EditUsetViewModel {  Number = applicationUser.PhoneNumber,
                 DateBirth =applicationUser.DateBirth,EmailNotifications=applicationUser.EmailNotifications,
-            FirstName=applicationUser.FirstName,ImageAvatar=applicationUser.ImageAvatar,SecondName=applicationUser.SecondName};
+            FirstName=applicationUser.FirstName,SecondName=applicationUser.SecondName,ImageData=applicationUser.ImageData};
             if (applicationUser == null)
             {
                 return HttpNotFound();
@@ -111,12 +113,11 @@ namespace DiplomWeb.Controllers
                 appUser.SecondName = model.SecondName;
                 appUser.EmailNotifications = model.EmailNotifications;
 
-                if(upload != null)
+                if (upload != null)
                 {
-                    string prefix =Guid.NewGuid().ToString();
-                    string fileName = prefix + System.IO.Path.GetFileName(upload.FileName);
-                    appUser.ImageAvatar = fileName;
-                    upload.SaveAs(Server.MapPath("~/Content/UserPhoto/"  + fileName));
+                    appUser.ImageMimeType = upload.ContentType;
+                    appUser.ImageData = new byte[upload.ContentLength];
+                    upload.InputStream.Read(appUser.ImageData, 0, upload.ContentLength);
                 }
 
 

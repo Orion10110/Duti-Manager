@@ -10,6 +10,8 @@ namespace DiplomWeb
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js"));
+            bundles.Add(new ScriptBundle("~/scripts/chartist.min.js").Include(
+                       "~/Scripts/chartist.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
@@ -36,7 +38,11 @@ namespace DiplomWeb
                   "~/Scripts/main.js"
 
                    ));
-           
+            bundles.Add(new ScriptBundle("~/jgrowl").Include(
+                  "~/Scripts/jquery.jgrowl.min.js"
+
+                   ));
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
@@ -44,7 +50,10 @@ namespace DiplomWeb
                     "~/Content/fullcalendar.css"));
             bundles.Add(new StyleBundle("~/Content/styles").Include(
                    "~/Content/styles.css"));
+            bundles.Add(new StyleBundle("~/Content/jgrowl").Include("~/Content/jquery.jgrowl.min.css"));
             bundles.Add(new StyleBundle("~/Content/tabs").Include("~/Content/tabs.css"));
+            bundles.Add(new StyleBundle("~/Content/font-awesome").Include("~/Content/font-awesome.min.css"));
+            bundles.Add(new StyleBundle("~/Content/chartist").Include("~/Content/chartist.min.css"));
         }
     }
 }

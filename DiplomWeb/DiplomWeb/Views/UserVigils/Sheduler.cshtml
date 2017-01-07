@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DiplomWeb.Models.Vigil>
+﻿@model DiplomWeb.Models.Vigil
 @using Newtonsoft.Json;
 @{
     ViewBag.Title = "Дежурства";
@@ -17,11 +17,16 @@
     <div class="col-md-12 hidden-print">
         <div id="dp" class="hidden-print"></div>
     </div>
-    <div class="space hidden-print" >
-        <a href="#" id="print-button">Print</a>
-    </div>
 
  
+</div>
+<div class="row" style="margin-top:15px">
+    <div class="col-xs-2">
+        <div class="space hidden-print">
+            <a class="button-style" id="print-button">На печать</a>
+            <a class="button-style" href="@Url.Action("Index",new { id=Model.Id})">Назад</a>
+        </div>
+    </div>
 </div>
 <div id="export"></div>
 

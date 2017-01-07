@@ -1,6 +1,15 @@
 ﻿@model DiplomWeb.Models.RegisterViewModel
 @{
     ViewBag.Title = "Регистрация";
+    if (Request.IsAuthenticated)
+    {
+       
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutLoging.cshtml";
+    }
 }
 
 <h2>@ViewBag.Title.</h2>
@@ -17,6 +26,13 @@
             @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
         </div>
     </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.SecondName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.SecondName, new { @class = "form-control" })
+        </div>
+    </div>
     <div class="form-group">
         @Html.LabelFor(m => m.FirstName, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
@@ -24,9 +40,9 @@
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.SecondName, new { @class = "col-md-2 control-label" })
+        @Html.LabelFor(m => m.Patronymic, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.SecondName, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.Patronymic, new { @class = "form-control" })
         </div>
     </div>
     <div class="form-group">

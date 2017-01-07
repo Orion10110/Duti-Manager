@@ -58,12 +58,10 @@ namespace DiplomWeb.Controllers
         {
 
             var user= db.Users.Find(User.Identity.GetUserId());
-            List<ProjectInfo> projects =user.Groups.Select(t => new ProjectInfo
-              {Id =t.Project.Id,Name = t.Project.Name}).ToList();
+            List<Project> projects = user.Groups.Select(s => s.Project).ToList();
             if (UserManager.IsInRole(user.Id, "Admin"))
             {
-                projects = db.Projects.Select(t=>new ProjectInfo {
-                    Id =t.Id,Name=t.Name+" "}).ToList();
+                projects = db.Projects.ToList();
             }
             return View(projects);
         }
@@ -115,9 +113,11 @@ namespace DiplomWeb.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.Users = db.Users.ToList();
+
+
+            ViewBag.Users = db.Users.OrderBy(s=>s.SecondName).ToList();
             ViewBag.ProjectId = id;
-            return View(project.Groups);
+            return PartialView(project.Groups);
         }
         [HttpPost, ActionName("Members")]
         public ActionResult Members(IEnumerable<string> users, IEnumerable<string> groups, int id)
@@ -129,7 +129,9 @@ namespace DiplomWeb.Controllers
             {
                 project.Groups.Where(p => groups.Contains(p.Id.ToString())).ToList().ForEach(u => u.ApplicationUsers.AddRange(us));
             }
-            return View();
+            db.Entry(project).State = EntityState.Modified;
+            db.SaveChanges();
+            return Json(new { message = "Участники добавлены" }, JsonRequestBehavior.DenyGet);
         }
         // GET: Projects/Create
         public ActionResult Create()
@@ -142,7 +144,7 @@ namespace DiplomWeb.Controllers
         // сведения см. в статье http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Description,DateStart,DataFinal,Priority,Group")] Project project,List<string> groups, IEnumerable<HttpPostedFileBase> files=null)
+        public ActionResult Create([Bind(Include = "Name,Description,DateStart,DataFinal,Priority,Group")] Project project,List<string> groups, IEnumerable<HttpPostedFileBase> files=null)
         {
              project.ApplicationUser=db.Users.Find( User.Identity.GetUserId());
 
@@ -164,7 +166,7 @@ namespace DiplomWeb.Controllers
                 SaveFiles(files,project);
                 db.Projects.Add(project);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Project",new { id = project.Id });
             }
 
             return View(project);
@@ -198,7 +200,7 @@ namespace DiplomWeb.Controllers
             {
                 return HttpNotFound();
             }
-            return View(project);
+            return PartialView(project);
         }
 
         // POST: Projects/Edit/5
@@ -213,9 +215,9 @@ namespace DiplomWeb.Controllers
             {
                 db.Entry(project).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(project);
+            return Json(new { message = "Проект изменен" }, JsonRequestBehavior.DenyGet);
+        }
+          return Json(new {message="Ошибка, попробуйте снова"},JsonRequestBehavior.DenyGet);
         }
 
         // GET: Projects/Delete/5
@@ -251,8 +253,16 @@ namespace DiplomWeb.Controllers
             Project pr=  db.Projects.Find(id);
             return PartialView(pr.Groups.ToList());
         }
-
-
+        [HttpPost]
+        public ActionResult DeleteMembers(int group,string user)
+        {
+            ApplicationUser userApp = db.Users.Find(user);
+            Group gr = userApp.Groups.First(s => s.Id == group);
+            gr.ApplicationUsers.Remove(userApp);
+            db.Entry(gr).State = EntityState.Modified;
+            db.SaveChanges();
+            return Json(new { message = "Проект изменен" }, JsonRequestBehavior.DenyGet);
+        }
 
 
         protected override void Dispose(bool disposing)

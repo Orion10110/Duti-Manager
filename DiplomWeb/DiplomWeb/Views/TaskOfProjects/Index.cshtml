@@ -1,51 +1,138 @@
-﻿@model IEnumerable<DiplomWeb.Models.TaskOfProject>
-
+﻿@model DiplomWeb.Models.TaskOfProject
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Задача "+Model.Name;
+}
+@section Styles{
+    @Styles.Render("~/Content/tabs")
+    <link href="/Content/fix-project.css" rel="stylesheet">
 }
 
-<h2>Index</h2>
+<ul class="tab">
+    <li><a id="overwiew" href='@Url.Action("Overview",new { id =Model.Id})' class="tablinks active-link">Обзор</a></li>
+    @if(ViewBag.Admin){
+        <li><a href='@Url.Action("Edit",new { id =Model.Id})' class="tablinks">Редактировать</a></li>
+        @*<li><a href='@Url.Action("Members",new { id =Model.Id})' class="tablinks">Участники</a></li>*@
+    }
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.ForWhom.FirstName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FromWhom.FirstName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Description)
-        </th>
-        <th></th>
-    </tr>
+</ul>
+<div class="container">
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.ForWhom.FirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FromWhom.FirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.id })
-        </td>
-    </tr>
+    <div class="row">
+        <div id="message"></div>
+        <h2 class="project-name">@Model.Project.Name: @Model.Name</h2>
+
+        <div id="view" class="view-project">
+
+        </div>
+
+
+        @*<div class="col-md-6">
+
+                <div class="well">
+
+
+                    <p>@Model.DateStart</p>
+                    <p>@Model.DataFinal</p>
+                    <div>
+                        <span class="pull-left">Приоретет: @Model.Priority</span>
+                        <span class="pull-right">Автор: @Model.ApplicationUser.SecondName @Model.ApplicationUser.FirstName</span>
+                    </div>
+                    <div class="clearfix"></div>
+                    <h4>Описание</h4>
+                    <p>@Html.Raw(Model.Description)</p>
+                    <div >
+                    Файлы:
+                    @foreach (DiplomWeb.Models.FilesCRM item in Model.FilesCRMs)
+                    {
+
+
+                            <a href="~/Files/@item.Name">@item.FileName</a>
+
+                    }</div>
+                    <div></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div id="members"></div> </div>*@
+    </div>
+
+</div>
+
+@section Scripts {
+
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/tinymce")
+    @Scripts.Render("~/bundles/scripts")
+    <script>
+        function LoadAnimation() {
+            var load = document.createElement('div');
+            load.className = "cssload-container";
+            var div = document.createElement('div');
+            div.className = "cssload-whirlpool";
+            load.appendChild(div);
+            return load;
+        }
+
+
+        $(document).ready(function () {
+
+
+
+            $('#view').empty().append(LoadAnimation());
+            $.ajax({
+
+                url: '@Url.Action("Overview",new { id =Model.Id})',
+                success: function (html) {
+                    $('#view').empty().append(html);
+
+                }
+            });
+
+
+        });
+        $("#view").on("submit", function (event) {
+            event.preventDefault();
+            var url = $('#view #CreateTask')[0].action;
+            var data = $('#view #CreateTask')[0];
+            data = new FormData(data);
+            $.ajax({
+                url: url,
+                type: "POST",
+                dataType:"json",
+                data: data,
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function (html) {
+                    $("#overwiew").click();
+                    //$('#message').empty().prepend('<div class="alert alert-success">' + html.message + '</div>').show();
+                    //setTimeout(function (e) { $('#message').hide(1000).empty(); }, 4000);
+                    $.jGrowl(html.message, { life: 5000, theme: 'result-growl'});
+                }
+            });
+        });
+
+
+
+
+
+        $(".tablinks").click(function (e) {
+            e.preventDefault();
+            $(".tablinks").removeClass("active-link");
+            $(this).addClass("active-link");
+            $('#view').empty().append(LoadAnimation());
+            var url = $(this).attr("href");
+            $.ajax({
+                url: url,
+                success: function (html) {
+
+                    $('#view').empty().append(html);
+                    tinymce.remove();
+                    tinymce.init({ selector: 'textarea' });
+                }
+            });
+        });
+    </script>
+
 }
-
-</table>

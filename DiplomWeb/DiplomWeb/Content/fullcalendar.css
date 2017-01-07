@@ -1395,3 +1395,7 @@ be a descendant of the grid when it is being dragged.
 .fc-unthemed .fc-list-empty { /* theme will provide own background */
 	background-color: #eee;
 }
+
+.fc-scroller {
+   overflow-y: hidden !important;
+}

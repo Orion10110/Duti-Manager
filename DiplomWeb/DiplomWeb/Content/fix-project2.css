@@ -1,0 +1,35 @@
+﻿.control-content  .container.body-content{
+    padding: 0px 0px 0px 0px;
+    max-width: 100%;
+    overflow-x:hidden;
+}
+
+.navbar-inverse {
+    background-color: rgba(48, 126, 125, 0.76);
+    border-color: rgba(255, 255, 255, 0.28);
+}
+
+.navbar-inverse .navbar-brand {
+    color: #ffffff;
+}
+.navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus {
+    color: #d0d0d0;
+    background-color: transparent;
+}
+
+.navbar-inverse .navbar-toggle {
+    border-color: rgba(255, 255, 255, 0.52);
+}
+.navbar-inverse .navbar-nav > li > a {
+    color: #ffffff;
+}
+.navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
+    color: #c7c4c4;
+    background-color: transparent;
+}
+.navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form {
+    border-color: #dcdcdc;
+}
+.navbar-inverse .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus {
+    background-color: rgba(218, 218, 218, 0.44);
+}

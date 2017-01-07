@@ -1,4 +1,4 @@
-﻿ tinymce.init({ selector: 'textarea' });
+﻿ tinymce.init({ selector: 'textarea.tiny' });
 
 $(document).ready(function () {
    
@@ -13,7 +13,7 @@ $(document).ready(function () {
     var i = 0;
     $('.addLink').click(function () {
         i++;
-        var html2Add = "<div><input type='text' class = 'form-control' required name='groups' style='display:inline'/><a class='del_group'>x</a></div>";
+        var html2Add = "<div ><span><input type='text' class = 'form-control col-md-10 elem' required name='groups' style=''/><a class='del_group'><i class='fa fa-times-circle' aria-hidden='true'></i></a></span></div>";
 
         $('#addGroup').append(html2Add);
     })

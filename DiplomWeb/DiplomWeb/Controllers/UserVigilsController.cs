@@ -35,33 +35,18 @@ namespace DiplomWeb.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: RecordVigils
-        public ActionResult Index()
+        public ActionResult Index(int id)
         {
-            //string id = User.Identity.GetUserId();
-            //ApplicationUser applicationUser = db.Users.Find(id);
-            //var role = db.Roles.Where(d=>d.)
-            ////IEnumerable<Vigil> listVigil = db.Vigils.Include(v => v.ApplicationRole).
+            Vigil vig = db.Vigils.Find(id);
+            var user = db.Users.Find(User.Identity.GetUserId());
+            ViewBag.Admin = false;
+            if (UserManager.IsInRole(user.Id, "Admin"))
+            {
 
-            string id = User.Identity.GetUserId();
-         //   IEnumerable<String> list = UserManager.GetRoles(id);
-           // db.ApplicationRole.Where(p => list.Contains(p.Name));
-           // db.Vigils.Include(v => v.ApplicationRole);
-            //List<ApplicationRole> rl = db.ApplicationRole.Where(p => list.Contains(p.Name)).ToList();
-           // List<Vigil> vigil = new List<Vigil>();
-            //foreach (ApplicationRole ap in rl)
-            //{
-            //    vigil.AddRange(ap.Vigils.ToList());
-            //}
-            //List<RecordVigil> records = new List<RecordVigil>();
-            //foreach (Vigil vg in vigil)
-            //{
+                ViewBag.Admin = true;
+            }
 
-            //    records.AddRange(vg.RecordVigils);
-            //}
-          //  ViewBag.VigilId = new SelectList(vigil, "Id", "Name");
-
-            //    original.Any(p => otherPeople.Contains(p));
-            return View();
+            return View(vig);
         }
 
         public ActionResult Vigil(int id)
@@ -75,6 +60,7 @@ namespace DiplomWeb.Controllers
             Vigil vigil =db.Vigils.Find(id);
             ViewBag.VigilName = vigil.Name;
             ViewBag.VigilId = vigil.Id;
+            ViewBag.Users = vigil.ApplicationUsers.ToList();
             ViewBag.UserName = user.SecondName + " " + user.FirstName;
             List<RecordVigil> list = vigil.RecordVigils.ToList();
             List<object> record = new List<object>();
@@ -92,10 +78,10 @@ namespace DiplomWeb.Controllers
             ViewBag.Record = record;
             ViewBag.Days = vigil.Days;
             ViewBag.VigilName = vigil.Name;
-            return View();
+            return PartialView();
         }
         [HttpPost]
-        public FileContentResult DownloadFile([Bind(Include = "Id,TitleOne,Text,DateStart,DataEnd")] DateSelect dateSelect)
+        public FileContentResult DownloadFile([Bind(Include = "Id,TitleOne,Text,DateStart,DateEnd")] DateSelect dateSelect)
         {
             Vigil vig = db.Vigils.Find(dateSelect.Id);
             List<RecordVigil> rvig = vig.RecordVigils.Where(s => s.StartAt >= dateSelect.DateStart && s.StartAt <= dateSelect.DateEnd).ToList();
@@ -240,7 +226,7 @@ namespace DiplomWeb.Controllers
             ViewBag.Users = listUser;
             ViewBag.Name = vigil.Name;
             //    original.Any(p => otherPeople.Contains(p));
-            return View();
+            return View(vigil);
         }
 
 
@@ -333,7 +319,10 @@ namespace DiplomWeb.Controllers
         //}
 
 
-      
+        public ActionResult View(DateSelect dateSelect)
+        {
+            return PartialView(dateSelect);
+        }
      
         [HttpPost]
         public JsonResult ChangeEvent(int id,string title, string color,string description)

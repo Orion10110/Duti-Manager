@@ -1,13 +1,23 @@
 ﻿@model IEnumerable<DiplomWeb.Models.Group> 
 <div class="panel panel-default">
-    <div class="panel-heading">Участники</div>
-    <div class="panel-body">
+    <div class="panel-body style-scroll" style="height:415px; overflow:auto;">
         @foreach (DiplomWeb.Models.Group item in Model)
         {
-            <p>@item.Name:</p>
+
+            <h5 class="head-group">@item.Name:</h5>
             foreach (var user in item.ApplicationUsers)
             {
-                <a href="">@String.Format("{0} {1}",user.SecondName,user.FirstName )</a>
+                <div class="users-project">
+                    <a href="@Url.Action("UserInfo", "ApplicationUsers",new { user.Id })">
+                        <div class="image-cut pull-left">
+                            <img  width="75"
+                                 src="@Url.Action("GetImage", "ApplicationUsers",new { user.Id })" />
+                        </div>
+                       
+                        <span class="text-img"> @String.Format("{0} {1}", user.SecondName, user.FirstName)</span>
+                        <span class="clearfix"></span>
+                    </a>
+                </div>
             }
         }
 

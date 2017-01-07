@@ -79,13 +79,20 @@ namespace DiplomWeb.Controllers
         // сведения см. в статье http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(RegisterViewModel model)
+        public async Task<ActionResult> Create(RegisterViewModel model, HttpPostedFileBase upload = null)
         {
 
             if (ModelState.IsValid)
             {
 
-                var user = new ApplicationUser {Patronymic=model.Patronymic, UserName = model.UserName, Email = model.Email, PhoneNumber = model.Number,DateBirth = model.DateBirth,CountHolidayDays=model.CountHolidayDays,FirstName=model.FirstName,SecondName=model.SecondName};
+                var user = new ApplicationUser {SMSNotifications=model.SMSNotifications, Patronymic =model.Patronymic, UserName = model.UserName, Email = model.Email, PhoneNumber = model.Number,DateBirth = model.DateBirth,CountHolidayDays=model.CountHolidayDays,FirstName=model.FirstName,SecondName=model.SecondName};
+
+                if (upload != null)
+                {
+                    user.ImageMimeType = upload.ContentType;
+                    user.ImageData = new byte[upload.ContentLength];
+                    upload.InputStream.Read(user.ImageData, 0, upload.ContentLength);
+                }
                 var result = await UserManager.CreateAsync(user, model.Password);
 
 
@@ -93,6 +100,51 @@ namespace DiplomWeb.Controllers
             }
 
             return View(model);
+        }
+
+
+        public ActionResult UserInfo(string id)
+        {
+            ApplicationUser user = db.Users.Find(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            return View(user);
+        }
+
+
+
+
+        public FileContentResult GetImage(string id)
+        {
+            ApplicationUser user = db.Users.Find(id);
+
+            if (user != null)
+            {
+                if(user.ImageData!=null) return File(user.ImageData, user.ImageMimeType);
+                byte[] img = System.IO.File.ReadAllBytes(Server.MapPath(@"~/Files/Images/people.png"));
+                return File(img, "image/png");
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public FileContentResult GetImageUser()
+        {
+            string id = User.Identity.GetUserId();
+            ApplicationUser user = db.Users.Find(id);
+
+            if (user != null)
+            {
+                return File(user.ImageData, user.ImageMimeType);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // GET: ApplicationUsers/ChooseRole/5
@@ -143,7 +195,12 @@ namespace DiplomWeb.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             ApplicationUser applicationUser = db.Users.Find(id);
-            var model = new ChangedViewModel {Patronymic=applicationUser.Patronymic, Id=applicationUser.Id, UserName = applicationUser.UserName, Email = applicationUser.Email, Number = applicationUser.PhoneNumber,SecondName =applicationUser.SecondName,
+            if (applicationUser == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var model = new ChangedViewModel {ImageData=applicationUser.ImageData, ImageMimeType=applicationUser.ImageMimeType, SMSNotifications=applicationUser.SMSNotifications, Patronymic=applicationUser.Patronymic, Id=applicationUser.Id, UserName = applicationUser.UserName, Email = applicationUser.Email, Number = applicationUser.PhoneNumber,SecondName =applicationUser.SecondName,
             CountHolidayDays=applicationUser.CountHolidayDays,FirstName =applicationUser.FirstName, DateBirth=applicationUser.DateBirth,EmailNotifications=applicationUser.EmailNotifications};
             if (applicationUser == null)
             {
@@ -157,7 +214,7 @@ namespace DiplomWeb.Controllers
         // сведения см. в статье http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(ChangedViewModel model)
+        public ActionResult Edit(ChangedViewModel model,  HttpPostedFileBase upload = null)
         {
             if (ModelState.IsValid)
             {
@@ -167,6 +224,14 @@ namespace DiplomWeb.Controllers
                 {
                     appUser.PasswordHash = UserManager.getHasherPassword(model.Password);
                 }      
+               
+                if (upload != null)
+                {
+                    appUser.ImageMimeType = upload.ContentType;
+                    appUser.ImageData = new byte[upload.ContentLength];
+                    upload.InputStream.Read(appUser.ImageData, 0, upload.ContentLength);
+                }
+
                 appUser.PhoneNumber = model.Number;
                 appUser.Email = model.Email;
                 appUser.UserName = model.UserName;
@@ -177,6 +242,7 @@ namespace DiplomWeb.Controllers
                 appUser.FirstName = model.FirstName;
                 appUser.SecondName = model.SecondName;
                 appUser.Patronymic = model.Patronymic;
+                appUser.SMSNotifications = model.SMSNotifications;
                 db.Entry(appUser).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

@@ -65,6 +65,11 @@ namespace DiplomWeb.Models
 
     public class RegisterViewModel
     {
+
+        public RegisterViewModel(){
+            this.CountHolidayDays = 24;
+            }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Адрес электронной почты")]
@@ -83,9 +88,13 @@ namespace DiplomWeb.Models
         [Display(Name = "Уведомления по email")]
         public bool EmailNotifications { get; set; }
 
+        [Display(Name = "Уведомления по SMS")]
+        public bool SMSNotifications { get; set; }
+
+
         [Required]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Дата рождения")]
         public  DateTime DateBirth { get; set; }
        
@@ -101,7 +110,6 @@ namespace DiplomWeb.Models
         [Required]
         [Display(Name = "Имя пользователя")]
         public string UserName { get; set; }
-
 
         [Required]
         [StringLength(100, ErrorMessage = "Значение {0} должно содержать не менее {2} символов.", MinimumLength = 6)]
@@ -136,12 +144,16 @@ namespace DiplomWeb.Models
 
         [Required]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Возраст")]
         public DateTime DateBirth { get; set; }
 
         [Display(Name = "Фото")]
         public string ImageAvatar { get; set; }
+
+        public byte[] ImageData { get; set; }
+        public string ImageMimeType { get; set; }
+
 
         [Required]
         [Phone]
@@ -173,9 +185,12 @@ namespace DiplomWeb.Models
         [Display(Name = "Уведомления по email")]
         public bool EmailNotifications { get; set; }
 
+        [Display(Name = "Уведомления по SMS")]
+        public bool SMSNotifications { get; set; }
+
         [Required]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Дата рождения")]
         public DateTime DateBirth { get; set; }
 
@@ -193,6 +208,8 @@ namespace DiplomWeb.Models
         public string UserName { get; set; }
 
 
+        public byte[] ImageData { get; set; }
+        public string ImageMimeType { get; set; }
 
 
         [System.Web.Mvc.HiddenInput(DisplayValue = false)]

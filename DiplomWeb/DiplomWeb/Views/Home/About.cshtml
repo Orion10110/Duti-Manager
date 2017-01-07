@@ -1,5 +1,13 @@
 ﻿@{
-    ViewBag.Title = "About";
+    if (Request.IsAuthenticated)
+    {
+        ViewBag.Title = "О программе - УО \"ГГКТТД\": Домашняя | УО \"Гродненский государственный колледж техники, технологий и дизайна\"";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutLoging.cshtml";
+    }
 }
 <h2>@ViewBag.Title.</h2>
 <h3>@ViewBag.Message</h3>

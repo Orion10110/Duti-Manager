@@ -1,0 +1,66 @@
+﻿@model DiplomWeb.Models.TaskOfProject
+
+<div class="row clear-margin">
+    <div class="col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="pull-left">@Model.Name</span>
+                <span class="pull-right">@Model.Priority</span>
+                <div class="clearfix"></div>
+            </div>
+            <div class="panel-body">
+                <p>@Html.Raw(Model.Description)</p>
+                <hr>
+                <div>
+                    Файлы:
+                    @foreach (DiplomWeb.Models.FilesCRM item in Model.FilesCRMs)
+                    {
+
+
+                        <a href="~/Files/@item.Name">@item.FileName</a>
+
+                    }
+                </div>
+                <span>
+                    Статус:@Model.TaskStatus.ToString().Replace('_', ' ');
+</span><br>
+                <span class="pull-left">
+                    Получена от:<a href="@Url.Action("UserInfo", "ApplicationUsers",new { Model.ForWhom.Id })"> @Model.FromWhom.SecondName @Model.FromWhom.FirstName</a>
+</span>
+                <span class="pull-right">
+                    Назначена: <a href="@Url.Action("UserInfo", "ApplicationUsers",new { Model.ForWhom.Id })"> @Model.ForWhom.SecondName @Model.ForWhom.FirstName</a>
+                </span>
+                <div class="clearfix"></div>
+                <span>Выполняется с: @Model.DateStart.ToString()</span>
+                <span class="pull-right">
+                    Ожидаемая дата закрытия: @Model.DataFinal.ToString()
+                </span>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div id="members">
+            <div class="panel panel-default">
+                <div class="panel-body style-scroll" style="height:415px; overflow:auto;">
+                    <h5 class="head-group">Наблюдатели:</h5>
+                    @foreach (var user in Model.Watchers)
+                    {
+                        <div class="users-project">
+                            <a href="@Url.Action("UserInfo", "ApplicationUsers",new { user.Id })">
+                                <div class="image-cut pull-left">
+                                    <img width="75"
+                                         src="@Url.Action("GetImage", "ApplicationUsers",new { user.Id })" />
+                                </div>
+
+                                <span class="text-img"> @String.Format("{0} {1}", user.SecondName, user.FirstName)</span>
+                                <span class="clearfix"></span>
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,17 +1,69 @@
-﻿@model IEnumerable<DiplomWeb.Models.ProjectInfo>
+﻿@model IEnumerable<DiplomWeb.Models.Project>
 @using DiplomWeb.Models
 @{
     ViewBag.Title = "Проекты";
 }
 
-<h2>Проекты</h2>
+<div class="clearfix">
+    <h2 class="pull-left">Проекты</h2>
 
-<dib>
-    <ul>
-        @foreach (ProjectInfo item in Model)
+    <a class="pull-right button-style mg-t-26 " href="@Url.Action("Create")">Создать новый</a>
+</div>
+
+<div>
+
+    <div class="table-my">
+
+        <div class="row-table header-table dark-table">
+            <div class="cell-table">
+                @Html.DisplayNameFor(model => model.Name)
+            </div>
+            <div class="cell-table">
+                @Html.DisplayNameFor(model => model.ApplicationUser)
+            </div>
+            <div class="cell-table">
+                @Html.DisplayNameFor(model => model.Priority)
+            </div>
+
+            <div class="cell-table">
+                @Html.DisplayNameFor(model => model.TasksOfProject)
+            </div>
+            <div class="cell-table">
+                @Html.DisplayNameFor(model => model.DateStart)
+            </div>
+        </div>
+
+        @foreach (Project item in Model)
         {
-           
-            <li>@Html.RouteLink(item.Name, "Project", new { id = item.Id }) </li>
+            <div class="row-table clickable-row"  data-href='@Url.Action("Project","Projects",new { id=item.Id})'>
+                <div class="cell-table">
+                    @item.Name
+                </div>
+                <div>
+                    @item.ApplicationUser.SecondName @item.ApplicationUser.FirstName
+                </div>
+                <div class="cell-table">
+                    @item.Priority
+                </div>
+                <div class="cell-table">
+                    @item.TasksOfProject.Count
+                </div>
+                <div class="cell-table">
+                    @item.DateStart
+                </div>
+            </div>
+
         }
-    </ul>
-</dib>
+    </div>   
+</div>
+
+@section Scripts {
+    <script>
+    $(document).ready(function($) {
+        $(".clickable-row").click(function() {
+            window.document.location = $(this).data("href");
+        });
+    });
+    </script>
+
+}

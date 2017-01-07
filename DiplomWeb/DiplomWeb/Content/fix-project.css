@@ -1,0 +1,16 @@
+﻿.control-content  .container.body-content{
+    padding: 49px 0px 0px 0px;
+    max-width: 100%;
+    overflow-x:hidden;
+}
+.ct-series-a .ct-line,
+.ct-series-a .ct-point{
+  stroke: rgba(100, 100, 115, 0.7);
+
+}
+.ct-series-a .ct-slice-pie {
+  fill:rgba(100, 100, 115, 0.7);
+}
+.ct-label {
+    font-size:14px;
+}

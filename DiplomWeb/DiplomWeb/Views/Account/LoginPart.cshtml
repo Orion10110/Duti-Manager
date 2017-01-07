@@ -1,0 +1,121 @@
+﻿@using DiplomWeb.Models
+@model LoginViewModel
+
+@section Styles{
+ 
+<link href="~/Content/loginform.css" rel="stylesheet" />
+}
+
+    @*<h1>Vini</h1>
+    <div class="form-group ">
+        <input type="text" class="form-control" placeholder="Username " id="UserName">
+        <i class="fa fa-user"></i>
+    </div>
+    <div class="form-group log-status">
+        <input type="password" class="form-control" placeholder="Password" id="Passwod">
+        <i class="fa fa-lock"></i>
+    </div>
+    <span class="alert">Invalid Credentials</span>
+    <a class="link" href="#">Lost your password?</a>
+    <button type="button" class="log-btn">Log in</button>*@
+
+    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" , id="login-form"}))
+            {
+        <div class="login-form slide-left">
+            <img class="home-logo-image" src="~/Files/Images/ggkttd.png" />
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", id = "UserName", placeholder = "Логин" })
+                <i class="fa fa-user"></i>
+                @*@Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })*@
+            </div>
+            <div class="form-group log-status">
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", id = "password", placeholder = "Пароль" })
+                <i class="fa fa-lock"></i>
+            </div>
+
+            <div class="form-group clearfix">
+                <div class="checkbox pull-left">
+                        <label>
+                            <input type="checkbox" value="">
+                            <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                             Запомнить
+                        </label>
+                    @*@Html.CheckBoxFor(m => m.RememberMe)
+                    @Html.LabelFor(m => m.RememberMe)*@
+                </div>
+                <span class="alert-form pull-right">Ошибка аунтификации</span>
+            </div>
+         
+            
+                <input type="submit" value="Выполнить вход" class="log-btn" />
+
+            @*<p>
+                    @Html.ActionLink("Регистрация нового пользователя", "Register")
+                </p>*@
+            @* Включите, когда будет включено подтверждение учетной записи для функции сброса пароля
+                <p>
+                    @Html.ActionLink("Забыли пароль?", "ForgotPassword")
+                </p>*@
+            </div>
+            }
+
+
+
+        @*</div>*@
+
+@*<script src="js/index.js"></script>*@
+
+
+@*<div class="fix-row-width">
+    <h2>Авторизация</h2>
+    <div class="row">
+        <div class="col-md-8">
+            <section id="loginForm">    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                    @Html.AntiForgeryToken()
+                    <h4>Используйте локальную учетную запись для входа.</h4>
+                    <hr />
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.UserName, new { @class = "col-md-2 control-label" })
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+                        <div class="col-md-10">
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <div class="checkbox">
+                                @Html.CheckBoxFor(m => m.RememberMe)
+                                @Html.LabelFor(m => m.RememberMe)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Выполнить вход" class="btn btn-default" />
+                        </div>
+                    </div>
+                    <p>
+                        @Html.ActionLink("Регистрация нового пользователя", "Register")
+                    </p>
+                    @* Включите, когда будет включено подтверждение учетной записи для функции сброса пароля
+                        <p>
+                            @Html.ActionLink("Забыли пароль?", "ForgotPassword")
+                        </p>
+                }
+            
+            </section>
+        </div>
+
+    </div>
+</div>*@

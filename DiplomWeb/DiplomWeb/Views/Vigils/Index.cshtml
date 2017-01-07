@@ -1,39 +1,105 @@
 ﻿@model IEnumerable<DiplomWeb.Models.Vigil>
-
+@using DiplomWeb.Models
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Дежурства";
 }
-
-<h2>Index</h2>
-
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Days)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Days)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
+@section Styles{
+    <link href="/Content/fix-project.css" rel="stylesheet">
 }
+<h2 class="project-name">Дежурства</h2>
 
-</table>
+<div class="view-project">
+    <div class="col-md-7">
+        <div class="clearfix">
+            <h4 class="pull-left">Дежурство</h4>
+            @if (ViewBag.Admin)
+            {
+                <a class="pull-right button-style" href="@Url.Action("Create")">Создать новое</a>
+            }
+           
+        </div>
+        <div class="table-my">
+
+            <div class="row-table header-table dark-table">
+                <div class="cell-table">
+                    @Html.DisplayNameFor(model => model.Name)
+                </div>
+                <div class="cell-table">
+                    @Html.DisplayNameFor(model => model.Days)
+                </div>
+                <div class="cell-table">
+                    Количество дежурных
+                </div>
+            </div>
+
+            @foreach (Vigil item in Model)
+        {
+                <div class="row-table clickable-row" data-href='@Url.Action("Index","UserVigils",new { id=item.Id})'>
+                    <div class="cell-table">
+                        @item.Name
+                    </div>
+                    <div>
+                        @item.Days
+                    </div>
+                    <div class="cell-table">
+                        @item.ApplicationUsers.Count
+                </div>
+            </div>
+
+        }
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div><h4>Ближайшие дежурства</h4></div>
+        <div class="table-my">
+            @{ 
+                List<RecordVigil> record = (List<RecordVigil>)ViewBag.Record;
+            }
+            <div class="row-table header-table dark-table">
+                <div class="cell-table">
+                    @Html.DisplayNameFor(model=>model.Name)
+                </div>
+                <div class="cell-table">
+                    @Html.DisplayNameFor(model => model.RecordVigils.FirstOrDefault().StartAt)
+                </div>
+                <div class="cell-table">
+                    @Html.DisplayNameFor(model=>model.RecordVigils.FirstOrDefault().Description)
+                </div>
+            </div>
+
+            @foreach (RecordVigil item in record)
+            {
+                <div class="row-table clickable-row" data-href='@Url.Action("Index","UserVigils",new { id=item.VigilID})'>
+                    <div class="cell-table">
+                        @item.Vigil.Name
+                    </div>
+                    <div>
+                        @item.StartAt
+                    </div>
+                    <div class="cell-table">
+                        @if (item.Description.Length > 20)
+                        {
+                            <span>@item.Description.Substring(0, 20)</span>
+                        }
+                        else
+                        {
+                            <span>@item.Description</span>
+                        }
+
+                    </div>
+                </div>
+
+            }
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+    $(document).ready(function($) {
+        $(".clickable-row").click(function() {
+            window.document.location = $(this).data("href");
+        });
+    });
+    </script>
+
+}

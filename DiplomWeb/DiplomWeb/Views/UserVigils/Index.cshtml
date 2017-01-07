@@ -1,138 +1,144 @@
-﻿
+﻿@model DiplomWeb.Models.Vigil
 @{
-    ViewBag.Title = "Дежурства";
+    ViewBag.Title = "Дежурство" +Model.Name;
 }
 @section Styles{
-    @Styles.Render("~/Content/calendar")
+    @Styles.Render("~/Content/tabs")
+@Styles.Render("~/Content/calendar")
+<link href="/Content/fix-project.css" rel="stylesheet">
 }
-<h2>ViewCalendar</h2>
 
-<div class="row">
-    <div class="col-md-8">
-        <div id="calendar"></div>
-    </div>
+<ul class="tab">
+    <li><a id="overwiew" href='@Url.Action("Vigil",new { id =Model.Id})' class="tablinks active-link">Обзор</a></li>
+    <li><a href='@Url.Action("View",new { Id=Model.Id, DateStart=DateTime.Now, DateEnd=DateTime.Now})' class="tablinks">Отчеты</a></li>
+    @if (ViewBag.Admin)
+    {
+        <li><a href='@Url.Action("Edit","Vigils",new { id =Model.Id})' class="tablinks">Редактировать</a></li>
 
-</div>
+    }
 
-<div class="modal fade" id="ModalAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form class="form-horizontal" id="addEvent" method="POST" action="@Url.Action("SaveDate")">
+</ul>
+<div class="container">
 
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Add Event</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="title" class="col-sm-2 control-label">Title</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="title" class="form-control" id="title" placeholder="Title">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="color" class="col-sm-2 control-label">Color</label>
-                        <div class="col-sm-10">
-                            <select name="color" class="form-control" id="color">
-                                <option value="">Choose</option>
-                                <option style="color:#0071c5;" value="#0071c5">&#9724; Dark blue</option>
-                                <option style="color:#40E0D0;" value="#40E0D0">&#9724; Turquoise</option>
-                                <option style="color:#008000;" value="#008000">&#9724; Green</option>
-                                <option style="color:#FFD700;" value="#FFD700">&#9724; Yellow</option>
-                                <option style="color:#FF8C00;" value="#FF8C00">&#9724; Orange</option>
-                                <option style="color:#FF0000;" value="#FF0000">&#9724; Red</option>
-                                <option style="color:#000;" value="#000">&#9724; Black</option>
+    <div class="row">
+        <div id="message"></div>
+        <h2 class="project-name">@Model.Name</h2>
 
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="start" class="col-sm-2 control-label">Дежурство</label>
-                        <div class="col-sm-10">
-                            @Html.DropDownList("vigilId", ViewBag.VigilId as SelectList,
-                            htmlAttributes: new { @class = "form-control" })
-                        </div>
-                    </div>
-                   
-                    <div class="form-group">
-                        <label for="start" class="col-sm-2 control-label">Start date</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="startAt" class="form-control" id="start" readonly>
-                        </div>
-                    </div>
-                   
-                    <div class="form-group">
-                        <label for="end" class="col-sm-2 control-label">End date</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="endAt" class="form-control" id="end" readonly>
-                        </div>
-                    </div>
+        <div id="view" class="view-project">
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default closing" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
-            </form>
         </div>
+
+
+        @*<div class="col-md-6">
+
+                <div class="well">
+
+
+                    <p>@Model.DateStart</p>
+                    <p>@Model.DataFinal</p>
+                    <div>
+                        <span class="pull-left">Приоретет: @Model.Priority</span>
+                        <span class="pull-right">Автор: @Model.ApplicationUser.SecondName @Model.ApplicationUser.FirstName</span>
+                    </div>
+                    <div class="clearfix"></div>
+                    <h4>Описание</h4>
+                    <p>@Html.Raw(Model.Description)</p>
+                    <div >
+                    Файлы:
+                    @foreach (DiplomWeb.Models.FilesCRM item in Model.FilesCRMs)
+                    {
+
+
+                            <a href="~/Files/@item.Name">@item.FileName</a>
+
+                    }</div>
+                    <div></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div id="members"></div> </div>*@
     </div>
+
 </div>
 
+@section Scripts {
+
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/tinymce")
+    @Scripts.Render("~/bundles/scripts")
+    <script>
+        function LoadAnimation() {
+            var load = document.createElement('div');
+            load.className = "cssload-container";
+            var div = document.createElement('div');
+            div.className = "cssload-whirlpool";
+            load.appendChild(div);
+            return load;
+        }
 
 
-<!-- Modal -->
-<div class="modal fade" id="ModalEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form class="form-horizontal" id="changeEvent" method="POST" action="@Url.Action("ChangeEvent")">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Edit Event</h4>
-                </div>
-                <div class="modal-body">
-
-                    <div class="form-group">
-                        <label for="title" class="col-sm-2 control-label">Title</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="title" class="form-control" id="title" placeholder="Title">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="color" class="col-sm-2 control-label">Color</label>
-                        <div class="col-sm-10">
-                            <select name="color" class="form-control" id="color">
-                                <option value="">Choose</option>
-                                <option style="color:#0071c5;" value="#0071c5">&#9724; Dark blue</option>
-                                <option style="color:#40E0D0;" value="#40E0D0">&#9724; Turquoise</option>
-                                <option style="color:#008000;" value="#008000">&#9724; Green</option>
-                                <option style="color:#FFD700;" value="#FFD700">&#9724; Yellow</option>
-                                <option style="color:#FF8C00;" value="#FF8C00">&#9724; Orange</option>
-                                <option style="color:#FF0000;" value="#FF0000">&#9724; Red</option>
-                                <option style="color:#000;" value="#000">&#9724; Black</option>
-
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <a id="DeleteLink" href="@Url.Action("DeleteEvent")">Delete</a>
-                        </div>
-                    </div>
-
-                    <input type="hidden" name="id" class="form-control" id="id">
+        $(document).ready(function () {
 
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default closing" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+
+            $('#view').empty().append(LoadAnimation());
+            $.ajax({
+
+                url: '@Url.Action("Vigil", new { id =Model.Id})',
+                success: function (html) {
+                    $('#view').empty().append(html);
+
+                }
+            });
 
 
-@section Scripts{
-    @Scripts.Render("~/bundles/calendar")
+        });
+        $("#view").on("submit", function (event) {
+            if ($('#view #CreateTask').length == 0) {
+                return;
+            }
+            event.preventDefault();
+            var url = $('#view #CreateTask')[0].action;
+            var data = $('#view #CreateTask')[0];
+            data = new FormData(data);
+            $.ajax({
+                url: url,
+                type: "POST",
+                dataType:"json",
+                data: data,
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function (html) {
+                    $("#overwiew").click();
+                    //$('#message').empty().prepend('<div class="alert alert-success">' + html.message + '</div>').show();
+                    //setTimeout(function (e) { $('#message').hide(1000).empty(); }, 4000);
+                    $.jGrowl(html.message, { life: 5000, theme: 'result-growl'});
+                }
+            });
+        });
+
+
+
+
+
+        $(".tablinks").click(function (e) {
+            e.preventDefault();
+            $(".tablinks").removeClass("active-link");
+            $(this).addClass("active-link");
+            $('#view').empty().append(LoadAnimation());
+            var url = $(this).attr("href");
+            $.ajax({
+                url: url,
+                success: function (html) {
+
+                    $('#view').empty().append(html);
+                    tinymce.remove();
+                    tinymce.init({ selector: 'textarea.tiny' });
+                }
+            });
+        });
+    </script>
+
 }

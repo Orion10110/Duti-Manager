@@ -1,50 +1,41 @@
 ﻿@model DiplomWeb.Models.EditUsetViewModel
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Редактировать данные";
 }
 
-<h2>Edit</h2>
 
-@using (Html.BeginForm("Edit", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+@using (Html.BeginForm("Edit", "Manage", FormMethod.Post, new { @class = "", role = "form", enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>EditUsetViewModel</h4>
+        <h4>Редактировать данные</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label" })
                 @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
-            </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.SecondName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+        <div class="form-group col-lg-12">
+            @Html.LabelFor(model => model.SecondName, htmlAttributes: new { @class = "control-label" })
                 @Html.EditorFor(model => model.SecondName, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.SecondName, "", new { @class = "text-danger" })
-            </div>
         </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.Patronymic, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.Patronymic, htmlAttributes: new { @class = "control-label" })
                 @Html.EditorFor(model => model.Patronymic, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
-            </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.EmailNotifications, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            @Html.LabelFor(model => model.EmailNotifications, htmlAttributes: new { @class = "control-label" })
                 <div class="checkbox">
                     @Html.EditorFor(model => model.EmailNotifications)
                     @Html.ValidationMessageFor(model => model.EmailNotifications, "", new { @class = "text-danger" })
                 </div>
-            </div>
         </div>
 
         <div class="form-group">
@@ -68,7 +59,7 @@
         
         <div class="form-group">
             <div style="position:relative;">
-                <label>Картинка</label>
+                <label>Фотография</label>
                 <a class='btn' href='javascript:;'>
                     Выберите файл...
                     <input type="file" class="form-control" accept="image/x-png,image/gif,image/jpeg" name="upload" size="40"
@@ -79,27 +70,24 @@
                 </a>
                 <span class='label label-info' id="upload-file-info"></span>
             </div>
-
-            @if (Model.ImageAvatar == null)
+            @if (Model.ImageData == null)
                 {
                 <div class="form-control-static">Нет картинки</div>
             }
             else
             {
-                <img class="img-thumbnail"
-                     src="~/Content/UserPhoto/@Model.ImageAvatar?w=170&h=170&mode=max" />
+                <img class="img-thumbnail" width="150" height="150"
+                     src="@Url.Action("GetImageUser", "ApplicationUsers")" />
             }
-
-
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Сохранить" class="btn btn-default" />
             </div>
         </div> 
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Назад", "Index")
 </div>

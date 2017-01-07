@@ -18,11 +18,11 @@ namespace DiplomWeb.Models
         [AllowHtml]
         public string Description { get; set; }
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Дата начала")]
         public DateTime? DateStart { get; set; }
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Дата выполнения")]
         public DateTime? DataFinal { get; set; }
         [Display(Name = "Приоритет")]
@@ -39,7 +39,8 @@ namespace DiplomWeb.Models
             this.FilesCRMs = new HashSet<FilesCRM>();
             this.TasksOfProject = new HashSet<TaskOfProject>();
         }
-        public virtual ICollection<Group> Groups { get; set; } 
+        public virtual ICollection<Group> Groups { get; set; }
+        [Display(Name = "Задачи")]
         public virtual ICollection<TaskOfProject> TasksOfProject { get; set; }
         [Display(Name = "Файлы")]
         public virtual ICollection<FilesCRM> FilesCRMs { get; set; }

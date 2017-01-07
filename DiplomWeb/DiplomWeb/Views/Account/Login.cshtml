@@ -2,6 +2,15 @@
 @model LoginViewModel
 @{
     ViewBag.Title = "Выполнить вход";
+    if (Request.IsAuthenticated)
+    {
+       
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutLoging.cshtml";
+    }
 }
 
 <h2>@ViewBag.Title.</h2>
@@ -51,11 +60,7 @@
             }
         </section>
     </div>
-    <div class="col-md-4">
-        <section id="socialLoginForm">
-            @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
-        </section>
-    </div>
+
 </div>
 
 @section Scripts {

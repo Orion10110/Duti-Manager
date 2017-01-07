@@ -1,0 +1,37 @@
+﻿@model DiplomWeb.Models.ApplicationUser
+@{
+    ViewBag.Title = "Информация пользователя";
+}
+
+<h2>@ViewBag.Title.</h2>
+
+<div>
+  
+
+    <dl class="dl-horizontal">
+        <dt>Фото:</dt>
+        <dd>
+            @*<img src="~/Content/UserPhoto/@ViewBag.User.ImageAvatar?w=170&h=170&mode=max">*@
+        @if (Model.ImageData == null)
+            {
+            <div class="form-control-static">Нет картинки</div>
+        }
+        else
+        {
+            <img class="img-thumbnail" width="150" height="150"
+                    src="@Url.Action("GetImage", "ApplicationUsers",new { Model.Id })" )" />
+        }
+    </dd>
+    <dt>Имя:</dt>
+    <dd>@Model.FirstName</dd>
+    <dt>Фамилия:</dt>
+    <dd>@Model.SecondName</dd>
+    <dt>Отчество:</dt>
+    <dd>@Model.Patronymic</dd>
+    <dt>Телефон:</dt>
+    <dd>@Model.PhoneNumber</dd>
+    <dt>E-mail:</dt>
+    <dd>@Model.Email</dd>
+    <dt>Дата рождения:</dt>
+    <dd>@Model.DateBirth</dd>
+</div>

@@ -56,14 +56,19 @@
 <div class="modal fade" id="ModalEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-             
-                  
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <a id="DeleteLink" href="@Url.Action("DeleteEvent")">Delete</a>
-                        </div>
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Add Event</h4>
+                    </div>
+                    <div class="modal-body">
+                        <a id="DeleteLink" href="@Url.Action("DeleteEvent")">Delete</a>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default closing" data-dismiss="modal">Close</button>
+                    </div>
+            </div>
         </div>
     </div>
-</div>
 
 
 @section Scripts{
@@ -233,39 +238,56 @@
             });
         }
 
-        $('#addEvent').submit(function (e) {
-            var $form = $(this);
-            $.ajax({
-                type: $form.attr('method'),
-                url: $form.attr('action'),
-                data: $form.serialize()
-            }).done(function (data) {
-                console.log('success');
-                calendar.fullCalendar('renderEvent',
-                     {
-                         id:data.Id,
-                         title: data.title,
-                         start: new Date(parseInt(data.start.substr(6))),
-                         end: new Date(parseInt(data.end.substr(6))),
-                         allDay:true
-                     },
-                     true // make the event "stick"
-                     );
-                $("#ModalAdd").find(".closing").trigger("click");
-            }).fail(function () {
-                console.log('fail');
+        //$('#addEvent').submit(function (e) {
+        //    var $form = $(this);
+        //    $.ajax({
+        //        type: $form.attr('method'),
+        //        url: $form.attr('action'),
+        //        data: $form.serialize()
+        //    }).done(function (data) {
+        //        console.log('success');
+        //        calendar.fullCalendar('renderEvent',
+        //             {
+        //                 id:data.Id,
+        //                 title: data.title,
+        //                 start: new Date(parseInt(data.start.substr(6))),
+        //                 end: new Date(parseInt(data.end.substr(6))),
+        //                 allDay:true
+        //             },
+        //             true // make the event "stick"
+        //             );
+        //        $("#ModalAdd").find(".closing").trigger("click");
+        //    }).fail(function () {
+        //        console.log('fail');
 
-            });
-            //отмена действия по умолчанию для кнопки submit
-            e.preventDefault();
-        });
+        //    });
+        //    //отмена действия по умолчанию для кнопки submit
+        //    e.preventDefault();
+        //});
+        function GetColor(text) {
+            var color = "#0071c5";
+            switch (text) {
+                case "подтвержден": color = "#008000"; break;
+                case "отказано": color = "#FF0000"; break;
+                case "новый": color = "#0071c5"; break;
+                case "уточнить": color = "#FFD700"; break;
+
+
+                default: color = "0071c5"; break;
+
+            }
+            return color;
+
+        }
+
 
         function GetEvents() {
             $.ajax({
                 async:false,
                 url: '/Holidays/GetEvents',
                 success: function (data) {
-                    $.each(data,function(index,value){
+                    $.each(data, function (index, value) {
+                        var color = GetColor(value.title);
                         calendar.fullCalendar('renderEvent',
                     {
                         id: value.id,
@@ -273,7 +295,8 @@
                         start: new Date(parseInt(value.start.substr(6))),
                         end: new Date(parseInt(value.end.substr(6))),
                         editable: value.editable,
-                        allDay:true
+                        allDay: true,
+                        color:color
                     },
                     true // make the event "stick"
                     );

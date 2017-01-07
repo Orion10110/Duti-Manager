@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DiplomWeb.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace DiplomWeb.Controllers
 {
@@ -14,8 +16,38 @@ namespace DiplomWeb.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: Vigils
+        private ApplicationUserManager _userManager;
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+
         public ActionResult Index()
+        {
+
+            ApplicationUser userApp = db.Users.Find(User.Identity.GetUserId());
+            ViewBag.Record= userApp.RecordVigils.Where(r => r.StartAt >= DateTime.Now).ToList();
+            List<Vigil> vig = userApp.Vigils.ToList();
+            ViewBag.Admin = false;
+            if (UserManager.IsInRole(userApp.Id, "Admin"))
+            {
+                ViewBag.Admin = true;
+                vig = db.Vigils.ToList();
+            }
+            return View(vig);
+        }
+
+
+
+        // GET: Vigils
+        public ActionResult List()
         {
             return View(db.Vigils.ToList());
         }
@@ -38,6 +70,7 @@ namespace DiplomWeb.Controllers
         // GET: Vigils/Create
         public ActionResult Create()
         {
+            ViewBag.Users = db.Users.ToList();
             return View();
         }
 
@@ -46,12 +79,17 @@ namespace DiplomWeb.Controllers
         // сведения см. в статье http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Name")] Vigil vigil, IEnumerable<string> days)
+        public ActionResult Create([Bind(Include = "Name")] Vigil vigil, IEnumerable<string> days, IEnumerable<string> users)
         {
             if (ModelState.IsValid)
             {
                 string d = String.Join(",", days.Where(s=>s!="false"));
                 vigil.Days = d;
+                List<ApplicationUser> us = db.Users.Where(j => users.Contains(j.Id)).ToList();
+                if (us.Count > 0)
+                {
+                    vigil.ApplicationUsers.AddRange(us);
+                }
                 db.Vigils.Add(vigil);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -68,11 +106,16 @@ namespace DiplomWeb.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Vigil vigil = db.Vigils.Find(id);
+            List<ApplicationUser> aplic = vigil.ApplicationUsers.ToList();
+            ViewBag.SetUser = aplic;
+            List<ApplicationUser> users = db.Users.OrderBy(s => s.SecondName).ToList();
+            ViewBag.Users = users.OrderBy(s => !aplic.Contains(s)).ToList();
+            
             if (vigil == null)
             {
                 return HttpNotFound();
             }
-            return View(vigil);
+            return PartialView(vigil);
         }
 
         // POST: Vigils/Edit/5
@@ -80,21 +123,31 @@ namespace DiplomWeb.Controllers
         // сведения см. в статье http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name")] Vigil vigil, IEnumerable<string> days)
+        public ActionResult Edit([Bind(Include = "Id,Name")] Vigil vigil, IEnumerable<string> days, IEnumerable<string> users)
         {
             if (ModelState.IsValid)
             {
+                Vigil vig = db.Vigils.Find(vigil.Id);
+                vig.ApplicationUsers.Clear();
+                List<ApplicationUser> us = db.Users.Where(j => users.Contains(j.Id)).ToList();
+                if (us.Count > 0)
+                {
+                    vig.ApplicationUsers.AddRange(us);
+                }
                 string d = String.Join(",", days.Where(s => s != "false"));
-                vigil.Days = d;
-                db.Entry(vigil).State = EntityState.Modified;
+                vig.Days = d;
+                vig.Name = vigil.Name;
+                db.Entry(vig).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return Json(new { message = "Дежурство изменено" }, JsonRequestBehavior.DenyGet);
             }
-            return View(vigil);
-        }
+            return Json(new { message = "Ошибка, попробуйте снова" }, JsonRequestBehavior.DenyGet);
 
-        // GET: Vigils/Delete/5
-        public ActionResult Delete(int? id)
+
+    }
+
+    // GET: Vigils/Delete/5
+    public ActionResult Delete(int? id)
         {
             if (id == null)
             {

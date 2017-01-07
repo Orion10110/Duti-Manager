@@ -28,6 +28,7 @@ namespace DiplomWeb.Controllers
 
         public ActionResult Index()
         {
+            ViewBag.Admin = false;
             if (User.Identity.IsAuthenticated)
             {
                 string id = User.Identity.GetUserId();
@@ -35,7 +36,11 @@ namespace DiplomWeb.Controllers
                 List<Vigil> vig = user.Vigils.ToList();
                 //IEnumerable<String> list = UserManager.GetRoles(id);
                 //List<Vigil> vig = db.ApplicationRole.Where(p => list.Contains(p.Name)).SelectMany(s => s.Vigils).ToList();
-
+               
+                if (UserManager.IsInRole(user.Id, "Admin"))
+                {
+                    ViewBag.Admin = true;
+                }
                 //var user = db.Users.Find(id);
                 List<ProjectInfo> projects = user.Groups.Select(t => new ProjectInfo
                 { Id = t.Project.Id, Name = t.Project.Name }).ToList();

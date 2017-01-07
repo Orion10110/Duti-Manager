@@ -34,6 +34,7 @@ namespace DiplomWeb.Controllers
         {
             string id = User.Identity.GetUserId();
             ApplicationUser appUser = db.Users.Find(id);
+            appUser.RecordVigils.Where(r => r.StartAt >= DateTime.Now);
             appUser.Holidays.ToList();
 
             //db.Vigils.Include(v => v.ApplicationRole);
@@ -152,10 +153,10 @@ namespace DiplomWeb.Controllers
 
         [HttpPost]
         public JsonResult UpdateDate(int id, DateTime startAt, DateTime endAt)
-        {
+         {
             Holiday holid = db.Holidays.Find(id);
             holid.DateStart = startAt;
-            holid.DateStart= endAt;
+            holid.DataFinal= endAt;
             db.Entry(holid).State = EntityState.Modified;
             db.SaveChanges();
             return new JsonResult { Data = new { start = startAt, end = endAt }, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
@@ -203,8 +204,8 @@ namespace DiplomWeb.Controllers
                 {
                     title = item.Status.ToString(),
                     id = item.Id,
-                    start = item.DateStart.AddDays(1).ToUniversalTime(),
-                    end = item.DataFinal.AddDays(1).ToUniversalTime(),
+                    start = item.DateStart,
+                    end = item.DataFinal,
                     allDay = true,
                     editable = editable
                 });
@@ -278,7 +279,7 @@ namespace DiplomWeb.Controllers
         // сведения см. в статье http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,DateStart,DataFinal,Status")] Holiday holiday)
+        public ActionResult Edit([Bind(Include = "Id,DateStart,DataFinal,Status,ApplicationUserId")] Holiday holiday)
         {
             if (ModelState.IsValid)
             {

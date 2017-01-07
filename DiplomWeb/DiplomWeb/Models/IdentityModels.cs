@@ -25,6 +25,10 @@ namespace DiplomWeb.Models
         public string Patronymic { get; set; }
         [Display(Name = "Оповещение по e-mail")]
         public bool EmailNotifications { get; set; }
+        [Display(Name = "Оповещение SMS")]
+        public bool SMSNotifications { get; set; }
+        [Display(Name = "Телефон")]
+        public override string PhoneNumber { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "Дата рождения")]
@@ -35,6 +39,13 @@ namespace DiplomWeb.Models
         public int CountHolidayDays { get; set; }
         [Display(Name = "Фото")]
         public string ImageAvatar { get; set; }
+        [HiddenInput(DisplayValue = false)]
+        public string DesctopPassword { get; set; }
+
+        public byte[] ImageData { get; set; }
+        public string ImageMimeType { get; set; }
+
+
         public ApplicationUser()
         {
             this.RecordVigils = new HashSet<RecordVigil>();

@@ -6,9 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title – приложение ASP.NET</title>
     @Styles.Render("~/Content/css")
-    @RenderSection("styles", required:false);
+    @RenderSection("styles", required:false)
     @Scripts.Render("~/bundles/modernizr")
     @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/font-awesome")
+    @Styles.Render("~/Content/jgrowl")
     @Styles.Render("~/Content/styles")
 
   
@@ -34,15 +36,55 @@
             </div>
         </div>
     </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer class="hidden-print">
-            <p></p>
-        </footer>
-    </div>
+    <div>
+        <div class="nav-side-menu col-sm-2  hidden-print">
 
+            <div class="menu-list">
+
+                <ul id="menu-content" class="menu-content collapse out">
+                    <a href="@Url.Action("Index","Projects")">
+                        <li>
+
+                            <i class="fa fa-archive fa-lg"></i> Проекты
+
+                        </li>
+                    </a>
+                    <a href="@Url.Action("Index","Vigils")">
+                        <li>
+
+                            <i class="fa fa-calendar fa-lg"></i> Дежурства
+
+                        </li>
+                    </a>
+
+                    <a href="@Url.Action("Index","Holidays")">
+                        <li>
+                            <i class="fa fa-suitcase fa-lg"></i> Отпуска
+
+                        </li>
+                    </a>
+                    <a href="#">
+                        <li>
+
+                            <i class="fa fa-file fa-lg"></i> Статистика
+
+                        </li>
+                    </a>
+                 </ul>  
+            </div>
+        </div>
+        <div class="control-content">
+            <div class="container body-content col-sm-offset-2 col-sm-10 col-print-12">
+                @RenderBody()
+                @*<hr />
+                <footer class="hidden-print">
+                    <p></p>
+                </footer>*@
+            </div>
+        </div>
+    </div>
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/jgrowl")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 </body>

@@ -1,95 +1,96 @@
 ﻿@model DiplomWeb.Models.Project
 
-@using (Html.BeginForm("Create","Projects",FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+
+@section Styles{
+    <link href="/Content/fix-project.css" rel="stylesheet">
+}
+<h2 class="project-name">Создать проект</h2>
+@using (Html.BeginForm(null,null,FormMethod.Post, new { id = "CreateTask", role = "form", enctype = "multipart/form-data",style="margin-top:25px" }))
 {
     @Html.AntiForgeryToken()
     
-    <div class="form-horizontal">
-        <h4>Project</h4>
-        <hr />
+    <div class="form-contrl">
+        
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-            </div>
+        <div class="col-md-6">
+        <div class="form-group col-md-12">
+            @Html.HiddenFor(model => model.Id)
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group col-md-12">
+            @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label" })
+            @Html.EnumDropDownListFor(model => model.Priority, htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Priority, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group col-md-12">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+            <div> @Html.TextAreaFor(model => model.Description, new { @class = "form-control col-md-12" })</div>
+            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextAreaFor(model => model.Description, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            <div class="col-md-offset-2 col-md-12">
+                <input type="submit" value="Create" class="btn btn-default" />
             </div>
         </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.DateStart, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.DateStart, new { htmlAttributes = new { @class = "form-control"} })
-                @Html.ValidationMessageFor(model => model.DateStart, "", new { @class = "text-danger" })
-            </div>
-           
         </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.DataFinal, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+        <div class="col-md-6">
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.DataFinal, htmlAttributes: new { @class = "control-label" })
                 @Html.EditorFor(model => model.DataFinal, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.DataFinal, "", new { @class = "text-danger" })
             </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EnumDropDownListFor(model => model.Priority, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Priority, "", new { @class = "text-danger" })
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.DateStart, htmlAttributes: new { @class = "control-label " })
+                @Html.EditorFor(model => model.DateStart, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DateStart, "", new { @class = "text-danger" })
             </div>
-        </div>
-        <div class="form-group">
-            <div style="position:relative;">
-                <label>Файлы</label>
-                <a class='btn' href='javascript:;'>
-                    Выберите файл...
-                    <input type="file" id="fileUploader" multiple class="form-control"  name="files" size="40"
-                           style="position:absolute;z-index:2;top:0;
+            <div class="form-group col-md-12">
+                <div style="position:relative;">
+                    <label>Файлы</label>
+                    <a class='btn' href='javascript:;'>
+                        Выберите файл...
+                        <input type="file" id="fileUploader" multiple class="form-control" name="files" size="40"
+                               style="position:absolute;z-index:2;top:0;
                                 left:0;filter: alpha(opacity=0); opacity:0;
-                                background-color:transparent;color:transparent;"
-                         >
-                </a>
-             <span id="upload-file-info"></span>   
+                                background-color:transparent;color:transparent;">
+                    </a>
+                    <span id="upload-file-info"></span>
+                </div>
+
+
+
             </div>
 
 
-
-        </div>
-
-
-        <div class="form-group">
-                        <label>Роли</label>
+            <div class="form-group col-md-12">
+                <label>Группы</label>
+                <div>
+                    <div id="addGroup">
                         <div>
-                            <div id="addGroup">
-                                <div><input type="text" class = "form-control" required name="groups" value="Персона" /></div>
-
-                            </div>
-                            
+                            <input type="text" style="margin-bottom: 10px;" class="form-control col-md-10" required name="groups" value="Участник" />
                         </div>
 
-            <p><a class="addLink">Добавить новый элемент</a></p>
-       </div>
+                    </div>
 
-
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Create" class="btn btn-default" />
                 </div>
+
+                <div><a class="addLink">Добавить группу</a></div>
             </div>
+
+        </div>
+
         </div>
 }
 @section Scripts {
+@Scripts.Render("~/bundles/tinymce")
+@Scripts.Render("~/bundles/scripts")
 <script>
+
+
+
     $("#fileUploader").change(function () {
         var files = $(this)[0].files;
         for (var i = 0; i < files.length; i++) {
@@ -97,15 +98,9 @@
         }
     });
 
-    var i = 0;
-    $('.addLink').click(function () {
-        i++;
-        var html2Add = "<div><input type='text' class = 'form-control' required name='groups' style='display:inline'/><a class='del_group'>x</a></div>";
-
-        $('#addGroup').append(html2Add);
-    })
-    $('#addGroup').on('click', '.del_group', function (e) {
-        $(this).parent().remove();
-    });
 </script>
+
+
+
+
 }

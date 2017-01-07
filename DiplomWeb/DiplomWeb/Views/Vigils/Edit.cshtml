@@ -1,58 +1,115 @@
 ﻿@model DiplomWeb.Models.Vigil
+@using DiplomWeb.Models
 
-@{
-    ViewBag.Title = "Edit";
-}
-
-<h2>Edit</h2>
-
-@using (Html.BeginForm())
+<section>
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @class = "", role = "form", id = "CreateTask" }))
 {
     @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>Vigil</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
+    <div class="col-md-6 form-contrl" style="">
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.Id)
+
+                <div class="form-group col-lg-12">
+                    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group  col-lg-12">
+                    <div class="">
+                        <label class="control-label">Дни недели</label>
+                        @{
+                        string[] days = Model.Days.Split(',');
+                        }
+
+                        <div class="checkbox">
+                            @Html.CheckBox("days", days.Contains("1"), new { value = "1", id = "monday" })
+                            @Html.Label("monday", "Понедельник", new { @for = "monday" })
+                        </div>
+                        <div class="checkbox">
+                            @Html.CheckBox("days", days.Contains("2"), new { value = "2", id = "tuesday" })
+                            @Html.Label("tuesday", "Вторник", new { @for = "tuesday" })
+                        </div>
+                        <div class="checkbox">
+                            @Html.CheckBox("days", days.Contains("3"), new { value = "3", id = "wednesday" })
+                            @Html.Label("wednesday", "Среда", new { @for = "wednesday" })
+                        </div>
+                        <div class="checkbox">
+                            @Html.CheckBox("days", days.Contains("4"), new { value = "4", id = "thursday" })
+                            @Html.Label("thursday", "Четверг", new { @for = "thursday" })
+                        </div>
+                        <div class="checkbox">
+                            @Html.CheckBox("days", days.Contains("5"), new { value = "5", id = "friday" })
+                            @Html.Label("friday", "Пятница", new { @for = "friday" })
+                        </div>
+                        <div class="checkbox">
+                            @Html.CheckBox("days", days.Contains("6"), new { value = "6", id = "saturday" })
+                            @Html.Label("saturday", "Субота", new { @for = "saturday" })
+                        </div>
+                        <div class="checkbox">
+                            @Html.CheckBox("days", days.Contains("7"), new { value = "7", id = "sunday" })
+                            @Html.Label("sunday", "Воскресение", new { @for = "sunday" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Изменить" class="btn btn-default" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="col-md-6">
+            <input type="text"  class="form-control full-width" id="filter" />
+            <div class="panel-body style-scroll" style="height:350px; overflow:auto;">
+                <h5 class="head-group">Дежурные</h5>
+              
+                @foreach (DiplomWeb.Models.ApplicationUser user in ViewBag.Users)
+                {
+                    bool checkedUser = false;
+                    if (Model.ApplicationUsers.Contains(user)) { checkedUser = true; }
+                    <label style="display:block">
+
+                        <div class="users-project @(checkedUser ? "check-user":"")">
+
+
+                            <div class="image-cut pull-left">
+                                <img width="75"
+                                     src="@Url.Action("GetImage", "ApplicationUsers",new { user.Id })" />
+                            </div>
+
+                            <span class="text-img filter_name"> @String.Format("{0} {1}", user.SecondName, user.FirstName)</span>
+                            <span class="clearfix"></span>
+
+                        </div>
+
+                        @Html.CheckBox("users", checkedUser, new { value = user.Id.ToString(), id = user.Id.ToString(), @class = "hidden" })
+                    </label>
+                }
+
+
             </div>
         </div>
 
-        <div class="form-group">
-            <h5>Дни недели</h5>
-            @{ 
-                string[] days = Model.Days.Split(',');
-            }
-            @Html.CheckBox("days", days.Contains("1"), new { value = "1", id = "monday" })
-            @Html.Label("monday", "Понедельник", new { @for = "monday" })
-            @Html.CheckBox("days", days.Contains("2"), new { value = "2", id = "tuesday" })
-            @Html.Label("tuesday", "Вторник", new { @for = "tuesday" })
-            @Html.CheckBox("days", days.Contains("3"), new { value = "3", id = "wednesday" })
-            @Html.Label("wednesday", "Среда", new { @for = "wednesday" })
-            @Html.CheckBox("days", days.Contains("4"), new { value = "4", id = "thursday" })
-            @Html.Label("thursday", "Четверг", new { @for = "thursday" })
-            @Html.CheckBox("days", days.Contains("5"), new { value = "5", id = "friday" })
-            @Html.Label("friday", "Пятница", new { @for = "friday" })
-            @Html.CheckBox("days", days.Contains("6"), new { value = "6", id = "saturday" })
-            @Html.Label("saturday", "Субота", new { @for = "saturday" })
-            @Html.CheckBox("days", days.Contains("7"), new { value = "7", id = "sunday" })
-            @Html.Label("sunday", "Воскресение", new { @for = "sunday" })
-        </div>
+        }
+</section>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-}
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+    <script>
+
+
+        $("#filter").bind("input propertychange", function (e) {
+            $(".filter_name").parent().removeClass("display-none");
+            $(".filter_name").each(function (index) {
+                var text = $(this).text().toLowerCase();
+                if (!text.includes($("#filter").val().toLowerCase())) {
+                    $(this).parent().addClass("display-none");
+                }
+            });
+
+        });
+        $(".users-project").click(function () {
+            $(this).toggleClass("check-user");
+        });
+    </script>
+

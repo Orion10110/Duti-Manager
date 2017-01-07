@@ -12,7 +12,17 @@
    
     <dl class="dl-horizontal">
         <dt>Фото:</dt>
-        <dd><img src="~/Content/UserPhoto/@ViewBag.User.ImageAvatar?w=170&h=170&mode=max"></dd>
+        <dd>@*<img src="~/Content/UserPhoto/@ViewBag.User.ImageAvatar?w=170&h=170&mode=max">*@
+            @if (Model.ImageData == null)
+            {
+                <div class="form-control-static">Нет картинки</div>
+            }
+            else
+            {
+                <img class="img-thumbnail" width="150" height="150"
+                     src="@Url.Action("GetImageUser", "ApplicationUsers")" />
+            }
+        </dd>
         <dt>Имя:</dt>
         <dd>@ViewBag.User.FirstName</dd>
         <dt>Фамилия:</dt>

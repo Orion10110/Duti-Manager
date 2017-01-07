@@ -1,53 +1,119 @@
 ﻿@model DiplomWeb.Models.Vigil
-
+@using DiplomWeb.Models
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Дежурства";
 }
 
-<h2>Create</h2>
+<h2>Добавление дежурства</h2>
+<section class="row">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { @class = "", role = "form", id = "CreateTask" }))
+    {
+        @Html.AntiForgeryToken()
 
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>Vigil</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-       
+        <div class="col-md-6">
+           
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+
+            <div class="form-group col-lg-12">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label" })
                 @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
             </div>
-        </div>
-        <div class="form-group">
-            <h5>Дни недели</h5>
-            @Html.CheckBox("days", false, new { value = "1", id = "monday" })
-            @Html.Label("monday", "Понедельник", new { @for = "monday" })
-            @Html.CheckBox("days", false, new { value = "2", id = "tuesday" })
-            @Html.Label("tuesday", "Вторник", new { @for = "tuesday" })
-            @Html.CheckBox("days", false, new { value = "3", id = "wednesday" })
-            @Html.Label("wednesday", "Среда", new { @for = "wednesday" })
-            @Html.CheckBox("days", false, new { value = "4", id = "thursday" })
-            @Html.Label("thursday", "Четверг", new { @for = "thursday" })
-            @Html.CheckBox("days", false, new { value = "5", id = "friday" })
-            @Html.Label("friday", "Пятница", new { @for = "friday" })
-            @Html.CheckBox("days", false, new { value = "6", id = "saturday" })
-            @Html.Label("saturday", "Субота", new { @for = "saturday" })
-            @Html.CheckBox("days", false, new { value = "7", id = "sunday" })
-            @Html.Label("sunday", "Воскресение", new { @for = "sunday" })
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+            <div class="form-group  col-lg-12">
+                <div class="">
+                    <label class="control-label">Дни недели</label>
+                    <div class="checkbox">
+                        @Html.CheckBox("days", false, new { value = "1", id = "monday" })
+                        @Html.Label("monday", "Понедельник", new { @for = "monday" })
+                    </div>
+                    <div class="checkbox">
+                        @Html.CheckBox("days", false, new { value = "2", id = "tuesday" })
+                        @Html.Label("tuesday", "Вторник", new { @for = "tuesday" })
+                    </div>
+                    <div class="checkbox">
+                        @Html.CheckBox("days", false, new { value = "3", id = "wednesday" })
+                        @Html.Label("wednesday", "Среда", new { @for = "wednesday" })
+                    </div>
+                    <div class="checkbox">
+                        @Html.CheckBox("days", false, new { value = "4", id = "thursday" })
+                        @Html.Label("thursday", "Четверг", new { @for = "thursday" })
+                    </div>
+                    <div class="checkbox">
+                        @Html.CheckBox("days", false, new { value = "5", id = "friday" })
+                        @Html.Label("friday", "Пятница", new { @for = "friday" })
+                    </div>
+                    <div class="checkbox">
+                        @Html.CheckBox("days", false, new { value = "6", id = "saturday" })
+                        @Html.Label("saturday", "Субота", new { @for = "saturday" })
+                    </div>
+                    <div class="checkbox">
+                        @Html.CheckBox("days", false, new { value = "7", id = "sunday" })
+                        @Html.Label("sunday", "Воскресение", new { @for = "sunday" })
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-}
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Создать" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <input type="text" class="form-control full-width" id="filter" />
+                <div class="panel-body style-scroll" style="height:350px; overflow:auto;">
+                    <h5 class="head-group">Дежурные</h5>
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+                    @foreach (DiplomWeb.Models.ApplicationUser user in ViewBag.Users)
+                {
+                    
+                    <label style="display:block">
+
+                        <div class="users-project ">
+
+
+                            <div class="image-cut pull-left">
+                                <img width="75"
+                                     src="@Url.Action("GetImage", "ApplicationUsers",new { user.Id })" />
+                            </div>
+
+                            <span class="text-img filter_name"> @String.Format("{0} {1}", user.SecondName, user.FirstName)</span>
+                            <span class="clearfix"></span>
+
+                        </div>
+
+                        @Html.CheckBox("users", false, new { value = user.Id.ToString(), id = user.Id.ToString(), @class = "hidden" })
+                    </label>
+                    }
+
+
+                </div>
+            </div>
+    }
+</section>
+<section class="row">
+    <div>
+        @Html.ActionLink("Вернуться", "Index",null,new {@class= "button-style" })
+    </div>
+</section>
+
+@section Scripts {
+
+    <script>
+
+        $("#filter").bind("input propertychange", function (e) {
+            $(".filter_name").parent().removeClass("display-none");
+            $(".filter_name").each(function (index) {
+                var text = $(this).text().toLowerCase();
+                if (!text.includes($("#filter").val().toLowerCase())) {
+                    $(this).parent().addClass("display-none");
+                }
+            });
+
+        });
+        $(".users-project").click(function () {
+            $(this).toggleClass("check-user");
+        });
+    </script>
+
+}

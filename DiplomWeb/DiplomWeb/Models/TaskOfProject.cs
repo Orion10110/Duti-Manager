@@ -10,7 +10,7 @@ namespace DiplomWeb.Models
     public class TaskOfProject
     {
         [HiddenInput(DisplayValue = false)]
-        public int id { get; set; }
+        public int Id { get; set; }
         [HiddenInput(DisplayValue = false)]
         public string FromWhomId { get; set; }
         [HiddenInput(DisplayValue = false)]
@@ -21,11 +21,11 @@ namespace DiplomWeb.Models
         [Display(Name = "Название")]
         public string Name { get; set; }
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Дата начала")]
         public DateTime? DateStart { get; set; }
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Дата выполнения")]
         public DateTime? DataFinal { get; set; }
         [Display(Name = "Приоритет")]
